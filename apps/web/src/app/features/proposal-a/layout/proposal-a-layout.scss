@@ -1,0 +1,205 @@
+/*
+ * Proposal A theme tokens and shared UI primitives (container, buttons, sections).
+ * The layout uses ViewEncapsulation.None, so every rule is scoped under the
+ * layout's element selector to avoid leaking into the review panel.
+ * Palette is a placeholder until the client's brand colors are received.
+ */
+app-proposal-a-layout {
+  --pa-navy: #1f3864;
+  --pa-navy-dark: #142647;
+  --pa-amber: #f59e0b;
+  --pa-amber-dark: #d98706;
+  --pa-on-amber: #1f1400;
+  --pa-bg: #f3f5f9;
+  --pa-surface: #ffffff;
+  --pa-text: #17202f;
+  --pa-muted: #5b6577;
+  --pa-border: #e0e5ee;
+  --pa-border-strong: #b9c3d3;
+  --pa-link: #1f3864;
+  --pa-focus: #f59e0b;
+  --pa-success-bg: #dcf5e7;
+  --pa-success-text: #146c3b;
+  --pa-warning-bg: #fdf0d5;
+  --pa-warning-text: #8a5a00;
+  --pa-neutral-bg: #eceff3;
+  --pa-neutral-text: #5b6577;
+  --pa-radius: 12px;
+  --pa-shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 2px 8px rgba(16, 24, 40, 0.06);
+  --pa-shadow-hover: 0 10px 28px rgba(16, 24, 40, 0.14);
+  --pa-font-mono: 'JetBrains Mono', 'Cascadia Mono', Consolas, monospace;
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--pa-bg);
+  color: var(--pa-text);
+  color-scheme: light;
+
+  > main {
+    flex: 1;
+  }
+
+  /* ---------- Layout primitives ---------- */
+  .pa-container {
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 16px;
+
+    @media (min-width: 768px) {
+      padding: 0 24px;
+    }
+  }
+
+  .section {
+    padding: 72px 0;
+    scroll-margin-top: 100px;
+
+    @media (max-width: 768px) {
+      padding: 48px 0;
+    }
+  }
+
+  .section--muted {
+    background: var(--pa-surface);
+    border-top: 1px solid var(--pa-border);
+    border-bottom: 1px solid var(--pa-border);
+  }
+
+  .section__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .section__head--center {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .section__title {
+    margin: 0;
+    font-size: clamp(1.5rem, 3vw, 2.125rem);
+    line-height: 1.2;
+    color: var(--pa-text);
+  }
+
+  .eyebrow {
+    margin: 0 0 8px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--pa-amber-dark);
+  }
+
+  .eyebrow--light {
+    color: var(--pa-amber);
+  }
+
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+    color: var(--pa-link);
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font: inherit;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background 0.15s ease,
+      border-color 0.15s ease;
+  }
+
+  .btn--lg {
+    padding: 14px 24px;
+    font-size: 1rem;
+  }
+
+  .btn--primary {
+    background: var(--pa-amber);
+    color: var(--pa-on-amber);
+
+    &:hover {
+      background: var(--pa-amber-dark);
+    }
+  }
+
+  .btn--ghost {
+    border-color: rgba(255, 255, 255, 0.55);
+    color: #fff;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+  }
+
+  .btn--dark {
+    background: var(--pa-navy-dark);
+    color: #fff;
+
+    &:hover {
+      background: #0c1a33;
+    }
+  }
+
+  .btn--whatsapp {
+    background: #1f9d55;
+    color: #fff;
+
+    &:hover {
+      background: #188045;
+    }
+  }
+
+  a:focus-visible,
+  .btn:focus-visible {
+    outline: 3px solid var(--pa-focus);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Review helper ---------- */
+  .review-pill {
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    z-index: 60;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(20, 38, 71, 0.92);
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+
+    &:hover {
+      background: var(--pa-navy-dark);
+    }
+  }
+}

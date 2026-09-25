@@ -1,0 +1,80 @@
+<button
+  type="button"
+  class="toggle"
+  [attr.aria-expanded]="expanded()"
+  aria-controls="catalog-filters-panel"
+  (click)="expanded.set(!expanded())"
+>
+  <app-icon name="filter" [size]="18" />
+  Filtros
+  @if (activeCount()) {
+    <span class="toggle__count">{{ activeCount() }}</span>
+  }
+</button>
+
+<div class="panel" id="catalog-filters-panel" [class.is-open]="expanded()">
+  <div class="panel__head">
+    <h2 class="panel__title">Filtros</h2>
+    @if (activeCount()) {
+      <button type="button" class="panel__clear" (click)="clear()">Limpiar</button>
+    }
+    <button
+      type="button"
+      class="panel__close"
+      aria-label="Cerrar filtros"
+      (click)="expanded.set(false)"
+    >
+      <app-icon name="close" />
+    </button>
+  </div>
+
+  <fieldset class="group">
+    <legend class="group__title">Categoría</legend>
+    @for (facet of categoryFacets(); track facet.value) {
+      <button
+        type="button"
+        class="option option--button"
+        [class.is-selected]="category() === facet.value"
+        [attr.aria-pressed]="category() === facet.value"
+        [disabled]="!facet.count && category() !== facet.value"
+        (click)="selectCategory(facet.value)"
+      >
+        <span>{{ facet.label }}</span>
+        <span class="option__count">{{ facet.count }}</span>
+      </button>
+    }
+  </fieldset>
+
+  <fieldset class="group">
+    <legend class="group__title">Marca</legend>
+    @for (facet of brandFacets(); track facet.value) {
+      <label class="option" [class.is-empty]="!facet.count">
+        <input
+          type="checkbox"
+          [checked]="brands().includes(facet.value)"
+          (change)="toggleBrand(facet.value)"
+        />
+        <span>{{ facet.label }}</span>
+        <span class="option__count">{{ facet.count }}</span>
+      </label>
+    }
+  </fieldset>
+
+  <fieldset class="group">
+    <legend class="group__title">Disponibilidad</legend>
+    @for (facet of stockFacets(); track facet.value) {
+      <label class="option" [class.is-empty]="!facet.count">
+        <input
+          type="checkbox"
+          [checked]="stock().includes($any(facet.value))"
+          (change)="toggleStock(facet.value)"
+        />
+        <span class="dot" [class]="'dot dot--' + facet.value" aria-hidden="true"></span>
+        <span>{{ facet.label }}</span>
+        <span class="option__count">{{ facet.count }}</span>
+      </label>
+    }
+  </fieldset>
+
+  <button type="button" class="panel__apply" (click)="expanded.set(false)">Ver resultados</button>
+</div>

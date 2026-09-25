@@ -1,0 +1,177 @@
+/*
+ * Proposal C "Mostrador técnico": dense, code-first, printed-catalog aesthetic.
+ * Theme tokens + shared primitives, scoped under the layout element
+ * (ViewEncapsulation.None) so nothing leaks into other proposals.
+ */
+app-proposal-c-layout {
+  --pc-bg: #f2f2ef;
+  --pc-surface: #ffffff;
+  --pc-ink: #16181c;
+  --pc-graphite: #22262c;
+  --pc-graphite-2: #2e333a;
+  --pc-line: #d9d9d4;
+  --pc-line-soft: #ebebe7;
+  --pc-muted: #5c6168;
+  --pc-yellow: #ffc400;
+  --pc-yellow-dark: #e0ab00;
+  --pc-on-yellow: #1a1400;
+  --pc-green: #1f8a4c;
+  --pc-link: #0b5cad;
+  --pc-radius: 4px;
+  --pc-sans: 'Roboto Condensed', 'Arial Narrow', 'Segoe UI', system-ui, sans-serif;
+  --pc-mono: 'JetBrains Mono', 'Cascadia Mono', Consolas, monospace;
+
+  /* Tokens consumed by shared UI (stock badge, gallery). */
+  --ui-border: var(--pc-line);
+  --ui-accent: var(--pc-ink);
+  --ui-text: var(--pc-ink);
+  --ui-focus: var(--pc-yellow);
+  --ui-radius: var(--pc-radius);
+  --ui-ok-bg: #dcf1e3;
+  --ui-ok-text: #146c3b;
+  --ui-warn-bg: #fff1c2;
+  --ui-warn-text: #7a5a00;
+  --ui-off-bg: #e6e6e2;
+  --ui-off-text: #5c6168;
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--pc-bg);
+  color: var(--pc-ink);
+  font-family: var(--pc-sans);
+  font-size: 15px;
+  color-scheme: light;
+
+  > main {
+    flex: 1;
+  }
+
+  .pc-container {
+    width: 100%;
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 0 16px;
+
+    @media (min-width: 768px) {
+      padding: 0 24px;
+    }
+  }
+
+  .pc-mono {
+    font-family: var(--pc-mono);
+  }
+
+  .pc-h {
+    margin: 0;
+    font-size: 1.0625rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .pc-panel {
+    background: var(--pc-surface);
+    border: 1px solid var(--pc-line);
+    border-radius: var(--pc-radius);
+  }
+
+  .pc-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 38px;
+    padding: 0 16px;
+    border: 1px solid transparent;
+    border-radius: var(--pc-radius);
+    font: inherit;
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .pc-btn--yellow {
+    background: var(--pc-yellow);
+    color: var(--pc-on-yellow);
+
+    &:hover {
+      background: var(--pc-yellow-dark);
+    }
+  }
+
+  .pc-btn--dark {
+    background: var(--pc-graphite);
+    color: #fff;
+
+    &:hover {
+      background: #000;
+    }
+  }
+
+  .pc-btn--ghost {
+    border-color: var(--pc-line);
+    background: var(--pc-surface);
+    color: var(--pc-ink);
+
+    &:hover {
+      border-color: var(--pc-ink);
+    }
+  }
+
+  .pc-btn--whatsapp {
+    background: #1f9d55;
+    color: #fff;
+
+    &:hover {
+      background: #188045;
+    }
+  }
+
+  .pc-link {
+    color: var(--pc-link);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 3px solid var(--pc-yellow);
+    outline-offset: 1px;
+  }
+
+  .pc-review-pill {
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    z-index: 60;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(22, 24, 28, 0.92);
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}

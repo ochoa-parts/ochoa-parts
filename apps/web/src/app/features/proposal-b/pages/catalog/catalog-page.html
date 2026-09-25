@@ -1,0 +1,191 @@
+<!-- Banner -->
+@if (state.activeCategory(); as category) {
+  <section class="banner">
+    <img class="banner__bg" [src]="photos[category.slug]" alt="" fetchpriority="high" />
+    <div class="pb-container banner__inner">
+      <nav class="crumbs crumbs--light" aria-label="Ruta de navegación">
+        <a [routerLink]="paths.home">Inicio</a><span>/</span>
+        <a [routerLink]="paths.catalog">Soluciones</a><span>/</span>
+        <span aria-current="page">{{ category.name }}</span>
+      </nav>
+      <p class="pb-kicker banner__kicker">Guía de selección · {{ category.name }}</p>
+      <h1 class="banner__title">{{ guide()?.question ?? category.name }}</h1>
+      @if (guide(); as guide) {
+        <p class="banner__lead">{{ guide.intro }}</p>
+      }
+    </div>
+  </section>
+
+  @if (guide(); as guide) {
+    <section class="pb-container choose-wrap">
+      <div class="choose">
+        <h2>Cómo elegir el equipo correcto</h2>
+        <ol>
+          @for (tip of guide.howToChoose; track tip; let i = $index) {
+            <li><span>{{ i + 1 }}</span>{{ tip }}</li>
+          }
+        </ol>
+      </div>
+    </section>
+  }
+} @else {
+  <section class="pb-container intro">
+    <nav class="crumbs" aria-label="Ruta de navegación">
+      <a [routerLink]="paths.home">Inicio</a><span>/</span><span aria-current="page">Soluciones</span>
+    </nav>
+    @if (state.query()) {
+      <p class="pb-kicker">Búsqueda</p>
+      <h1 class="intro__title">Resultados para «{{ state.query() }}»</h1>
+      <button type="button" class="pb-link intro__clear" (click)="state.query.set('')">Quitar búsqueda</button>
+    } @else {
+      <p class="pb-kicker">Soluciones</p>
+      <h1 class="intro__title">¿Qué necesitas medir o controlar?</h1>
+      <ul class="variables">
+        @for (facet of state.categoryFacets(); track facet.value) {
+          <li>
+            <button type="button" class="variable" [disabled]="!facet.count" (click)="state.toggleCategory(facet.value)">
+              <img [src]="photos[facet.value]" alt="" loading="lazy" />
+              <span class="variable__label">
+                <strong>{{ facet.label }}</strong>
+                <span>{{ facet.count }} equipos</span>
+              </span>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+}
+
+<!-- Equipment types -->
+@if (state.activeCategory()) {
+  <section class="pb-container types">
+    <h2 class="types__title">Tipos de equipo</h2>
+    <ul class="types__list">
+      @for (facet of state.subcategoryFacets(); track facet.value) {
+        <li>
+          <button
+            type="button"
+            class="type"
+            [class.is-active]="state.subcategory() === facet.value"
+            [attr.aria-pressed]="state.subcategory() === facet.value"
+            (click)="state.toggleSubcategory(facet.value)"
+          >
+            @if (subcategoryImage(facet.value); as image) {
+              <img [src]="image" alt="" loading="lazy" />
+            }
+            <span>
+              <strong>{{ facet.label }}</strong>
+              <em>{{ facet.count }} {{ facet.count === 1 ? 'modelo' : 'modelos' }}</em>
+            </span>
+          </button>
+        </li>
+      }
+    </ul>
+  </section>
+}
+
+<!-- Chip filter bar -->
+<div class="chipbar">
+  <div class="pb-container chipbar__inner">
+    <div class="chipbar__group" role="group" aria-label="Marca">
+      <span class="chipbar__label">Marca</span>
+      @for (facet of state.brandFacets(); track facet.value) {
+        @if (facet.count || state.brands().includes(facet.value)) {
+          <button
+            type="button"
+            class="chip"
+            [class.is-active]="state.brands().includes(facet.value)"
+            [attr.aria-pressed]="state.brands().includes(facet.value)"
+            (click)="state.toggleBrand(facet.value)"
+          >
+            {{ facet.label }} <span>{{ facet.count }}</span>
+          </button>
+        }
+      }
+    </div>
+    <div class="chipbar__group" role="group" aria-label="Disponibilidad">
+      <span class="chipbar__label">Disponibilidad</span>
+      @for (facet of state.stockFacets(); track facet.value) {
+        <button
+          type="button"
+          class="chip"
+          [class.is-active]="state.stock().includes($any(facet.value))"
+          [attr.aria-pressed]="state.stock().includes($any(facet.value))"
+          [disabled]="!facet.count && !state.stock().includes($any(facet.value))"
+          (click)="toggleStock(facet.value)"
+        >
+          {{ facet.label }} <span>{{ facet.count }}</span>
+        </button>
+      }
+    </div>
+    <div class="chipbar__selects">
+      <label>
+        <span class="sr-only">Rango de precio</span>
+        <select [value]="priceRangeIndex()" (change)="onPriceRange($any($event.target).value)">
+          @for (range of priceRanges; track range.label; let i = $index) {
+            <option [value]="i">{{ range.label }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        <span class="sr-only">Ordenar por</span>
+        <select [value]="state.sort()" (change)="state.setSort($any($event.target).value)">
+          @for (choice of sortChoices; track choice.value) {
+            <option [value]="choice.value">{{ choice.label }}</option>
+          }
+        </select>
+      </label>
+      @if (state.activeFilterCount()) {
+        <button type="button" class="chipbar__clear" (click)="state.clearFilters()">Limpiar</button>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- Results -->
+<section class="pb-container results">
+  <p class="results__count" aria-live="polite">
+    <strong>{{ state.results().length }}</strong> {{ state.results().length === 1 ? 'equipo' : 'equipos' }}
+    @if (state.activeSubcategory(); as sub) {
+      · {{ sub.name }}
+    }
+  </p>
+
+  @if (state.results().length) {
+    <ul class="grid">
+      @for (product of state.results(); track product.sku) {
+        <li><app-product-card-b [product]="product" [summary]="catalog.getSummary(product.sku)" /></li>
+      }
+    </ul>
+  } @else {
+    <div class="empty">
+      <h2>No encontramos equipos con esos criterios.</h2>
+      <p>Cuéntanos qué necesitas: un asesor te ayuda a ubicar la referencia o un equivalente.</p>
+      <div class="empty__actions">
+        <button type="button" class="pb-btn pb-btn--outline" (click)="state.resetAll()">Ver todo</button>
+        <a class="pb-btn pb-btn--whatsapp" [href]="whatsappSearchUrl()" target="_blank" rel="noopener noreferrer">
+          <app-icon name="chat" [size]="18" /> Consultar a un asesor
+        </a>
+      </div>
+    </div>
+  }
+</section>
+
+<!-- FAQ + advisor -->
+@if (guide(); as guide) {
+  <section class="pb-section faq-section">
+    <div class="pb-container faq-section__grid">
+      <div>
+        <p class="pb-kicker">Preguntas frecuentes</p>
+        <h2 class="pb-title faq-section__title">Dudas comunes sobre {{ state.activeCategory()?.name?.toLowerCase() }}</h2>
+        <app-faq-list [items]="guide.faq" />
+      </div>
+      <aside class="faq-section__aside">
+        <p class="faq-section__aside-title">¿Tienes una aplicación específica?</p>
+        <p class="faq-section__aside-text">Te confirmamos rango, materiales y compatibilidad antes de comprar.</p>
+        <app-advisor-card [advisor]="advisor" />
+      </aside>
+    </div>
+  </section>
+}

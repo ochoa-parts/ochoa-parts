@@ -1,0 +1,286 @@
+.page {
+  padding-top: 20px;
+  padding-bottom: 64px;
+}
+
+/* ---------- Breadcrumb ---------- */
+.breadcrumb ol {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: var(--pa-muted);
+
+  li + li::before {
+    content: '/';
+    margin-right: 6px;
+    color: var(--pa-border-strong);
+  }
+
+  a {
+    color: var(--pa-link);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  [aria-current='page'] {
+    color: var(--pa-text);
+    font-weight: 600;
+  }
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: start;
+}
+
+/* ---------- Jump nav ---------- */
+.jump {
+  position: sticky;
+  top: 102px;
+  z-index: 10;
+  display: flex;
+  gap: 4px;
+  margin: 48px 0 0;
+  padding: 6px;
+  overflow-x: auto;
+  background: var(--pa-surface);
+  border: 1px solid var(--pa-border);
+  border-radius: 10px;
+
+  a {
+    padding: 8px 14px;
+    border-radius: 6px;
+    color: var(--pa-text);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover {
+      background: var(--pa-bg);
+    }
+  }
+}
+
+/* ---------- Detail blocks ---------- */
+.details {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  grid-template-areas:
+    'desc docs'
+    'specs docs';
+  gap: 24px 32px;
+  margin-top: 24px;
+}
+
+#descripcion {
+  grid-area: desc;
+}
+
+#especificaciones {
+  grid-area: specs;
+}
+
+#documentos {
+  grid-area: docs;
+  align-self: start;
+}
+
+.block {
+  padding: 24px;
+  background: var(--pa-surface);
+  border: 1px solid var(--pa-border);
+  border-radius: var(--pa-radius);
+  scroll-margin-top: 170px;
+}
+
+.block__title {
+  margin: 0 0 16px;
+  font-size: 1.25rem;
+}
+
+.block__text {
+  margin: 0;
+  color: var(--pa-muted);
+  line-height: 1.65;
+}
+
+.specs {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+
+  th,
+  td {
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--pa-border);
+  }
+
+  th {
+    width: 42%;
+    font-weight: 600;
+    color: var(--pa-muted);
+  }
+
+  tr:nth-child(odd) {
+    background: var(--pa-bg);
+  }
+}
+
+.mono {
+  font-family: var(--pa-font-mono);
+}
+
+.files {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.file {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--pa-border);
+  border-radius: 10px;
+  background: var(--pa-bg);
+  color: var(--pa-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--pa-navy);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--pa-focus);
+    outline-offset: 2px;
+  }
+}
+
+.file__icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  background: #fde8e8;
+  color: #c0392b;
+  flex-shrink: 0;
+}
+
+.file__text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  span {
+    font-size: 0.8125rem;
+    color: var(--pa-muted);
+  }
+}
+
+.file__action {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--pa-link);
+}
+
+/* ---------- Related ---------- */
+.related {
+  margin-top: 56px;
+  scroll-margin-top: 170px;
+}
+
+.related__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.related__grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+/* ---------- Not found ---------- */
+.not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 64px;
+  padding-bottom: 64px;
+  text-align: center;
+  color: var(--pa-muted);
+
+  h1 {
+    margin: 16px 0 8px;
+    color: var(--pa-text);
+  }
+
+  p {
+    max-width: 520px;
+    margin: 0 0 24px;
+  }
+}
+
+.not-found__grid {
+  width: 100%;
+  margin-top: 48px;
+  text-align: left;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 960px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .details {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'desc'
+      'specs'
+      'docs';
+  }
+}
+
+@media (max-width: 560px) {
+  .jump {
+    top: 102px;
+    margin-top: 32px;
+  }
+
+  .block {
+    padding: 18px;
+  }
+
+  .related__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}

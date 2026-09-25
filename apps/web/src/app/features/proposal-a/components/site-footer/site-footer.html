@@ -1,0 +1,54 @@
+<footer class="footer" id="contacto">
+  <div class="pa-container footer__grid">
+    <div class="footer__brand">
+      <span class="footer__logo">
+        <img src="propuesta-a/logo-ochoa-parts.jpeg" alt="Ochoa Parts Automation" width="134" height="50" loading="lazy" />
+      </span>
+      <p>Instrumentación y control industrial. Más de 200 marcas para la industria de la región.</p>
+      <p class="footer__legal">Inversiones Ochoa Parts, C.A.</p>
+    </div>
+
+    <div>
+      <h2 class="footer__title">Catálogo</h2>
+      <ul class="footer__list">
+        @for (category of categories(); track category.slug) {
+          <li>
+            <a [routerLink]="catalogPath" [queryParams]="{ cat: category.slug }">{{
+              category.name
+            }}</a>
+          </li>
+        }
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="footer__title">Empresa</h2>
+      <ul class="footer__list">
+        <li><a [routerLink]="homePath" fragment="nosotros">Nosotros</a></li>
+        <li><a [routerLink]="homePath" fragment="marcas">Marcas</a></li>
+        <li><a [routerLink]="homePath" fragment="como-comprar">Cómo comprar</a></li>
+        <li><a [routerLink]="homePath">Zona de descargas</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="footer__title">Contacto</h2>
+      <ul class="footer__list footer__contact">
+        <li><app-icon name="mail" [size]="16" /> ventas&#64;ochoaparts.com</li>
+        <li><app-icon name="chat" [size]="16" /> WhatsApp comercial</li>
+        <li><app-icon name="pin" [size]="16" /> Venezuela · Panamá · EE. UU.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="pa-container footer__payments">
+    <span class="footer__payments-label">Métodos de pago:</span>
+    @for (method of paymentMethods; track method) {
+      <span class="footer__chip">{{ method }}</span>
+    }
+  </div>
+
+  <div class="footer__bottom">
+    <div class="pa-container">© {{ year }} Inversiones Ochoa Parts, C.A. Todos los derechos reservados.</div>
+  </div>
+</footer>

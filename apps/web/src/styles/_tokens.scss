@@ -1,0 +1,46 @@
+/* Design tokens. Placeholder palette until the client's brand colors are received. */
+@mixin dark-tokens {
+  --color-bg: #0e1522;
+  --color-surface: #172133;
+  --color-text: #e6ebf3;
+  --color-text-muted: #9aa6ba;
+  --color-border: #2a3850;
+  --color-link: #f59e0b;
+  --color-thumb-empty: #1f2b40;
+  --color-ready-bg: #123a26;
+  --color-ready-text: #7fe0a8;
+  --color-pending-bg: #3d2e0e;
+  --color-pending-text: #f7c96b;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+:root {
+  --color-navy: #1f3864;
+  --color-amber: #f59e0b;
+  --color-bg: #f4f6fa;
+  --color-surface: #ffffff;
+  --color-text: #1a2233;
+  --color-text-muted: #5b6577;
+  --color-border: #dde3ec;
+  --color-link: #1f3864;
+  --color-thumb-empty: #e8edf5;
+  --color-ready-bg: #dcf5e7;
+  --color-ready-text: #146c3b;
+  --color-pending-bg: #fdf0d5;
+  --color-pending-text: #8a5a00;
+  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.06), 0 2px 8px rgba(16, 24, 40, 0.06);
+  --shadow-card-hover: 0 8px 24px rgba(16, 24, 40, 0.14);
+  --radius: 12px;
+  --font: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    @include dark-tokens;
+  }
+}
+
+:root[data-theme='dark'] {
+  @include dark-tokens;
+}

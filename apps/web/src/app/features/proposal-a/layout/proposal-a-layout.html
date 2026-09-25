@@ -1,0 +1,12 @@
+<app-site-header [exchangeRateDate]="exchangeRateDate" />
+
+<main>
+  <router-outlet />
+</main>
+
+<app-site-footer [categories]="categories" />
+
+<a class="review-pill" routerLink="/">
+  <app-icon name="arrowLeft" [size]="16" />
+  Volver a propuestas
+</a>

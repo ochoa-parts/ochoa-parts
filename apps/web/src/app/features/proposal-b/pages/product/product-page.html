@@ -1,0 +1,182 @@
+@if (product(); as product) {
+  <div class="pb-container page">
+    <nav class="crumbs" aria-label="Ruta de navegación">
+      @for (crumb of crumbs(); track crumb.label) {
+        <a [routerLink]="crumb.path" [queryParams]="crumb.queryParams">{{ crumb.label === 'Catálogo' ? 'Soluciones' : crumb.label }}</a>
+        <span aria-hidden="true">/</span>
+      }
+      <span aria-current="page">{{ product.name }}</span>
+    </nav>
+
+    <!-- Top: gallery + purchase -->
+    <section class="top">
+      <div class="top__gallery">
+        <app-product-gallery [images]="product.gallery" [alt]="product.name" />
+      </div>
+
+      <div class="top__info">
+        <div class="tags">
+          <a class="tag tag--brand" [routerLink]="paths.catalog" [queryParams]="{ brand: product.brand }">{{ product.brand }}</a>
+          @if (subcategory(); as sub) {
+            <a class="tag" [routerLink]="paths.catalog" [queryParams]="{ cat: product.categorySlug, sub: sub.slug }">{{ sub.name }}</a>
+          }
+        </div>
+        <h1 class="name">{{ product.name }}</h1>
+        <p class="model">Modelo / SKU: <span class="pb-mono">{{ product.sku }}</span></p>
+
+        <dl class="keys">
+          @for (spec of keySpecs(); track spec.label) {
+            <div>
+              <dt>{{ spec.label }}</dt>
+              <dd>{{ spec.value }}</dd>
+            </div>
+          }
+        </dl>
+
+        <div class="buy">
+          <div class="buy__head">
+            <div class="buy__price">
+              <strong>{{ product.priceUsd | money: 'USD' }}</strong>
+              <span>Ref. {{ product.priceBs | money: 'Bs' }} · tasa referencial del {{ rateDate }}</span>
+            </div>
+            <div class="buy__stock">
+              <app-stock-badge [status]="product.stockStatus" />
+              @if (product.stockStatus === 'available') {
+                <span>{{ product.stockQty }} unidades</span>
+              }
+            </div>
+          </div>
+
+          @if (product.stockStatus === 'available') {
+            <div class="buy__actions">
+              <label class="sr-only" for="pb-qty">Cantidad</label>
+              <input id="pb-qty" class="buy__qty" type="number" min="1" [max]="product.stockQty" value="1" inputmode="numeric" />
+              <button type="button" class="pb-btn pb-btn--primary buy__add">
+                <app-icon name="cart" [size]="18" /> Agregar al pedido
+              </button>
+            </div>
+          } @else {
+            <p class="buy__unavailable">
+              {{ product.stockStatus === 'incoming' ? 'Este equipo viene en camino.' : 'Sin existencia por ahora.' }}
+              Consulta disponibilidad y tiempo de entrega con un asesor.
+            </p>
+          }
+
+          <a class="pb-btn pb-btn--outline buy__advisor" [href]="whatsappUrl()" target="_blank" rel="noopener noreferrer">
+            <app-icon name="chat" [size]="18" /> Consultar este equipo con un asesor
+          </a>
+        </div>
+
+        <ul class="trust">
+          <li><app-icon name="shield" [size]="18" /> Pago verificado por nuestro equipo</li>
+          <li><app-icon name="truck" [size]="18" /> Despacho a toda Venezuela</li>
+          <li><app-icon name="file" [size]="18" /> Ficha técnica y manual incluidos</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Section nav -->
+    <nav class="jump" aria-label="Secciones del producto">
+      <a [routerLink]="[]" fragment="descripcion">Descripción</a>
+      <a [routerLink]="[]" fragment="especificaciones">Especificaciones</a>
+      <a [routerLink]="[]" fragment="documentos">Documentos</a>
+      <a [routerLink]="[]" fragment="asesoria">Asesoría</a>
+      <a [routerLink]="[]" fragment="relacionados">Relacionados</a>
+    </nav>
+
+    <!-- Description + specs -->
+    <section class="details">
+      <div class="details__main">
+        <div class="block" id="descripcion">
+          <p class="pb-kicker">Descripción</p>
+          <p class="lead">{{ product.description }}</p>
+        </div>
+
+        <div class="block" id="documentos">
+          <p class="pb-kicker">Documentos</p>
+          <ul class="docs">
+            @for (file of product.files; track file.type) {
+              <li>
+                <button type="button" class="doc">
+                  <span class="doc__icon"><app-icon name="file" [size]="22" /></span>
+                  <span class="doc__text">
+                    <strong>{{ file.name }}</strong>
+                    <span>{{ file.sizeLabel }}</span>
+                  </span>
+                  <span class="doc__cta">Descargar</span>
+                </button>
+              </li>
+            } @empty {
+              <li class="muted">Este equipo no tiene documentos disponibles.</li>
+            }
+          </ul>
+        </div>
+      </div>
+
+      <div class="block specs-card" id="especificaciones">
+        <p class="pb-kicker">Especificaciones técnicas</p>
+        <table class="specs">
+          <tbody>
+            <tr><th scope="row">Marca</th><td>{{ product.brand }}</td></tr>
+            <tr><th scope="row">Modelo / SKU</th><td class="pb-mono">{{ product.sku }}</td></tr>
+            <tr><th scope="row">Categoría</th><td>{{ product.category.name }}</td></tr>
+            @for (spec of product.specs; track spec.label) {
+              <tr><th scope="row">{{ spec.label }}</th><td>{{ spec.value }}</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Advisory + FAQ -->
+    <section class="advisory" id="asesoria">
+      <div class="advisory__intro">
+        <p class="pb-kicker advisory__kicker">Asesoría técnica</p>
+        <h2 class="advisory__title">¿Es el equipo correcto para tu proceso?</h2>
+        <p class="advisory__text">
+          Te confirmamos rango, materiales y compatibilidad antes de comprar, y te proponemos
+          alternativas si este modelo no está disponible.
+        </p>
+        <app-advisor-card [advisor]="advisor()" [context]="'Producto: ' + product.name + ' (SKU ' + product.sku + ').'" />
+      </div>
+      @if (faq().length) {
+        <div class="advisory__faq">
+          <h3 class="advisory__faq-title">Preguntas frecuentes</h3>
+          <app-faq-list [items]="faq()" />
+        </div>
+      }
+    </section>
+
+    <!-- Related -->
+    @if (related().length) {
+      <section class="related" id="relacionados">
+        <div class="related__head">
+          <div>
+            <p class="pb-kicker">También te puede interesar</p>
+            <h2 class="related__title">Equipos relacionados</h2>
+          </div>
+          <a class="pb-link" [routerLink]="paths.catalog" [queryParams]="{ cat: product.categorySlug }">
+            Ver todo en {{ product.category.name }} <app-icon name="arrowRight" [size]="16" />
+          </a>
+        </div>
+        <ul class="related__grid">
+          @for (item of related(); track item.sku) {
+            <li><app-product-card-b [product]="item" /></li>
+          }
+        </ul>
+      </section>
+    }
+  </div>
+} @else {
+  <div class="pb-container not-found">
+    <p class="pb-kicker">Error 404</p>
+    <h1>Este equipo no está disponible.</h1>
+    <p class="not-found__text">Puede que la referencia haya cambiado. Explora las soluciones o consulta a un asesor.</p>
+    <a class="pb-btn pb-btn--primary" [routerLink]="paths.catalog">Ver soluciones</a>
+    <ul class="related__grid not-found__grid">
+      @for (item of related(); track item.sku) {
+        <li><app-product-card-b [product]="item" /></li>
+      }
+    </ul>
+  </div>
+}

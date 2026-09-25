@@ -1,0 +1,164 @@
+@if (product(); as product) {
+  <!-- Dark header -->
+  <section class="head">
+    <div class="pc-container">
+      <nav class="crumbs" aria-label="Ruta de navegación">
+        @for (crumb of crumbs(); track crumb.label) {
+          <a [routerLink]="crumb.path" [queryParams]="crumb.queryParams">{{ crumb.label }}</a> /
+        }
+        <span aria-current="page">{{ product.sku }}</span>
+      </nav>
+      <div class="head__row">
+        <div>
+          <a class="head__brand" [routerLink]="paths.catalog" [queryParams]="{ brand: product.brand }">{{ product.brand }}</a>
+          <h1 class="head__name">{{ product.name }}</h1>
+          <div class="head__code">
+            <span class="pc-mono">{{ product.sku }}</span>
+            <button type="button" (click)="copySku(product.sku)" [attr.aria-label]="'Copiar código ' + product.sku">
+              {{ copied() ? 'Copiado ✓' : 'Copiar código' }}
+            </button>
+          </div>
+        </div>
+        <app-stock-badge [status]="product.stockStatus" />
+      </div>
+    </div>
+  </section>
+
+  <div class="pc-container page">
+    <!-- Photo + buy -->
+    <section class="main">
+      <div class="main__gallery">
+        <app-product-gallery [images]="product.gallery" [alt]="product.name" />
+      </div>
+
+      <div class="buy">
+        <span class="buy__label">Precio unitario</span>
+        <strong class="buy__price">{{ product.priceUsd | money: 'USD' }}</strong>
+        <span class="buy__bs">Ref. {{ product.priceBs | money: 'Bs' }} · tasa referencial del {{ rateDate }}</span>
+
+        <div class="buy__stock">
+          @switch (product.stockStatus) {
+            @case ('available') {
+              <app-icon name="package" [size]="18" /> <strong>{{ product.stockQty }} unidades</strong> en existencia
+            }
+            @case ('incoming') {
+              <app-icon name="truck" [size]="18" /> En tránsito · consulta la fecha de llegada
+            }
+            @default {
+              <app-icon name="close" [size]="18" /> Sin existencia por ahora
+            }
+          }
+        </div>
+
+        @if (product.stockStatus === 'available') {
+          <div class="buy__add">
+            <label class="sr-only" for="pc-qty">Cantidad</label>
+            <input id="pc-qty" type="number" min="1" [max]="product.stockQty" value="1" inputmode="numeric" />
+            <button type="button" class="pc-btn pc-btn--yellow buy__cta">
+              <app-icon name="cart" [size]="18" /> Agregar al carrito
+            </button>
+          </div>
+        }
+        <a class="pc-btn pc-btn--whatsapp buy__wa" [href]="whatsappUrl()" target="_blank" rel="noopener noreferrer">
+          <app-icon name="chat" [size]="18" /> Consultar por WhatsApp
+        </a>
+
+        <dl class="buy__facts">
+          <div><dt>Marca</dt><dd>{{ product.brand }}</dd></div>
+          <div><dt>Categoría</dt><dd>{{ product.category.name }}</dd></div>
+          @if (subcategory(); as sub) {
+            <div><dt>Tipo</dt><dd>{{ sub.name }}</dd></div>
+          }
+        </dl>
+
+        <ul class="buy__trust">
+          <li><app-icon name="shield" [size]="16" /> Pago verificado por nuestro equipo</li>
+          <li><app-icon name="truck" [size]="16" /> Despacho a toda Venezuela</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Description, specs, documents -->
+    <section class="info">
+      <div class="info__col">
+        <div class="panel">
+          <h2 class="panel__title">Descripción</h2>
+          <p class="panel__text">{{ product.description }}</p>
+        </div>
+        <div class="panel">
+          <h2 class="panel__title">Documentos técnicos</h2>
+          <ul class="docs">
+            @for (file of product.files; track file.type) {
+              <li>
+                <button type="button" class="doc">
+                  <span class="doc__type">PDF</span>
+                  <span class="doc__text"><strong>{{ file.name }}</strong><span>{{ file.sizeLabel }}</span></span>
+                  <app-icon name="arrowRight" [size]="18" />
+                </button>
+              </li>
+            } @empty {
+              <li class="muted">Sin documentos disponibles.</li>
+            }
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 class="panel__title">Especificaciones técnicas</h2>
+        <table class="specs">
+          <tbody>
+            <tr><th scope="row">Fabricante</th><td>{{ product.brand }}</td></tr>
+            <tr><th scope="row">Código</th><td class="pc-mono">{{ product.sku }}</td></tr>
+            @for (spec of product.specs; track spec.label) {
+              <tr><th scope="row">{{ spec.label }}</th><td>{{ spec.value }}</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    @if (sameBrand().length) {
+      <section class="more">
+        <div class="more__head">
+          <h2>Más de {{ product.brand }}</h2>
+          <a [routerLink]="paths.catalog" [queryParams]="{ brand: product.brand }">Ver todo {{ product.brand }} →</a>
+        </div>
+        <ul class="cards">
+          @for (item of sameBrand(); track item.sku) {
+            <li><app-product-card-c [product]="item" /></li>
+          }
+        </ul>
+      </section>
+    }
+
+    @if (related().length) {
+      <section class="more">
+        <div class="more__head">
+          <h2>Productos relacionados</h2>
+          <a [routerLink]="paths.catalog" [queryParams]="{ cat: product.categorySlug }">Ver {{ product.category.name }} →</a>
+        </div>
+        <ul class="cards">
+          @for (item of related(); track item.sku) {
+            <li><app-product-card-c [product]="item" /></li>
+          }
+        </ul>
+      </section>
+    }
+  </div>
+} @else {
+  <section class="head head--404">
+    <div class="pc-container">
+      <p class="head__code404 pc-mono">404 · {{ slug() }}</p>
+      <h1 class="head__name">Referencia no disponible</h1>
+      <p class="head__text">El código no existe o fue retirado del catálogo. Revisa estas referencias o búscalo en el catálogo.</p>
+      <a class="pc-btn pc-btn--yellow" [routerLink]="paths.catalog">Ir al catálogo</a>
+    </div>
+  </section>
+  <div class="pc-container page">
+    <ul class="cards">
+      @for (item of related(); track item.sku) {
+        <li><app-product-card-c [product]="item" /></li>
+      }
+    </ul>
+  </div>
+}

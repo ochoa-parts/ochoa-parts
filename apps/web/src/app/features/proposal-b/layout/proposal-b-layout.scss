@@ -1,0 +1,221 @@
+/*
+ * Proposal B "Ingeniería de proceso": editorial, low density, advisor-led.
+ * Theme tokens + shared primitives, scoped under the layout element
+ * (ViewEncapsulation.None) so nothing leaks into other proposals.
+ */
+app-proposal-b-layout {
+  --pb-bg: #f7f5f0;
+  --pb-surface: #ffffff;
+  --pb-ink: #13232b;
+  --pb-muted: #5f6b70;
+  --pb-line: #e4dfd4;
+  --pb-petrol: #0f4c5c;
+  --pb-petrol-dark: #0a3440;
+  --pb-petrol-soft: #e3eef0;
+  --pb-amber: #e8a317;
+  --pb-amber-dark: #c98a0c;
+  --pb-on-amber: #1d1400;
+  --pb-radius: 14px;
+  --pb-serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --pb-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --pb-mono: 'JetBrains Mono', 'Cascadia Mono', Consolas, monospace;
+
+  /* Tokens consumed by shared UI (stock badge, gallery). */
+  --ui-border: var(--pb-line);
+  --ui-accent: var(--pb-petrol);
+  --ui-text: var(--pb-ink);
+  --ui-focus: var(--pb-amber);
+  --ui-radius: var(--pb-radius);
+  --ui-ok-bg: #dff1e6;
+  --ui-ok-text: #17613a;
+  --ui-warn-bg: #fbeed2;
+  --ui-warn-text: #845500;
+  --ui-off-bg: #ecebe6;
+  --ui-off-text: #5f6b70;
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--pb-bg);
+  color: var(--pb-ink);
+  font-family: var(--pb-sans);
+  color-scheme: light;
+
+  > main {
+    flex: 1;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--pb-serif);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .pb-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px;
+
+    @media (min-width: 768px) {
+      padding: 0 32px;
+    }
+  }
+
+  .pb-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 14px;
+    font-family: var(--pb-sans);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--pb-petrol);
+
+    &::before {
+      content: '';
+      width: 28px;
+      height: 2px;
+      background: var(--pb-amber);
+    }
+  }
+
+  .pb-section {
+    padding: 88px 0;
+    scroll-margin-top: 80px;
+
+    @media (max-width: 768px) {
+      padding: 56px 0;
+    }
+  }
+
+  .pb-title {
+    margin: 0;
+    font-size: clamp(1.75rem, 3.4vw, 2.625rem);
+    line-height: 1.15;
+  }
+
+  .pb-lead {
+    margin: 16px 0 0;
+    max-width: 640px;
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--pb-muted);
+  }
+
+  .pb-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font: inherit;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease;
+  }
+
+  .pb-btn--primary {
+    background: var(--pb-petrol);
+    color: #fff;
+
+    &:hover {
+      background: var(--pb-petrol-dark);
+    }
+  }
+
+  .pb-btn--amber {
+    background: var(--pb-amber);
+    color: var(--pb-on-amber);
+
+    &:hover {
+      background: var(--pb-amber-dark);
+    }
+  }
+
+  .pb-btn--outline {
+    border-color: var(--pb-ink);
+    color: var(--pb-ink);
+    background: transparent;
+
+    &:hover {
+      background: var(--pb-ink);
+      color: #fff;
+    }
+  }
+
+  .pb-btn--light {
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #fff;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+  }
+
+  .pb-btn--whatsapp {
+    background: #1f9d55;
+    color: #fff;
+
+    &:hover {
+      background: #188045;
+    }
+  }
+
+  .pb-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--pb-petrol);
+    font-weight: 700;
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 2px;
+
+    &:hover {
+      color: var(--pb-petrol-dark);
+    }
+  }
+
+  .pb-mono {
+    font-family: var(--pb-mono);
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  summary:focus-visible {
+    outline: 3px solid var(--pb-amber);
+    outline-offset: 2px;
+  }
+
+  .pb-review-pill {
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    z-index: 60;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(10, 52, 64, 0.92);
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  }
+}

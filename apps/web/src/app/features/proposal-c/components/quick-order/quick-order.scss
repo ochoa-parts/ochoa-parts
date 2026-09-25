@@ -1,0 +1,140 @@
+.qo {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 20px;
+}
+
+.qo__label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 0;
+  border-radius: var(--pc-radius);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.qo__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+
+  .pc-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.qo__example {
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  color: #fff !important;
+}
+
+.qo__clear {
+  border: 0;
+  background: none;
+  color: var(--pc-yellow);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.qo__result {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  background: var(--pc-surface);
+  border-radius: var(--pc-radius);
+  color: var(--pc-ink);
+  overflow: hidden;
+}
+
+.qo__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+
+  th,
+  td {
+    padding: 7px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--pc-line-soft);
+  }
+
+  th {
+    background: var(--pc-bg);
+    font-size: 0.6875rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  td a {
+    margin-right: 8px;
+    font-weight: 700;
+  }
+
+  .is-missing td {
+    background: #fff4f2;
+  }
+}
+
+.num {
+  text-align: right !important;
+  white-space: nowrap;
+}
+
+.qo__missing {
+  margin-right: 8px;
+  color: #b3261e;
+  font-weight: 700;
+}
+
+.qo__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding: 10px;
+  font-size: 0.8125rem;
+
+  .pc-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.qo__empty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  height: 100%;
+  min-height: 180px;
+  padding: 24px;
+  border: 2px dashed var(--pc-line);
+  border-radius: var(--pc-radius);
+  color: var(--pc-muted);
+
+  strong {
+    color: var(--pc-ink);
+    font-size: 1.0625rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .qo {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,44 @@
+@if (isReady()) {
+  <a class="card" [routerLink]="['/propuesta', proposal().id]">
+    <ng-container *ngTemplateOutlet="content" />
+  </a>
+} @else {
+  <article class="card card--disabled" aria-disabled="true">
+    <ng-container *ngTemplateOutlet="content" />
+  </article>
+}
+
+<ng-template #content>
+  <div class="card__thumb" [class.card__thumb--empty]="!proposal().thumbnail">
+    @if (proposal().thumbnail; as thumbnail) {
+      <img
+        [src]="thumbnail"
+        [alt]="'Vista previa de ' + proposal().code + ': ' + proposal().title"
+        loading="lazy"
+        decoding="async"
+      />
+    } @else {
+      <span class="card__thumb-letter">{{ proposal().id.toUpperCase() }}</span>
+    }
+  </div>
+
+  <div class="card__body">
+    <div class="card__meta">
+      <span class="card__code">{{ proposal().code }}</span>
+      <span class="badge" [class]="'badge badge--' + proposal().status">{{ statusLabel() }}</span>
+    </div>
+
+    <h2 class="card__title">{{ proposal().title }}</h2>
+    <p class="card__summary">{{ proposal().summary }}</p>
+
+    <ul class="card__tags">
+      @for (highlight of proposal().highlights; track highlight) {
+        <li class="tag">{{ highlight }}</li>
+      }
+    </ul>
+
+    @if (isReady()) {
+      <span class="card__cta">Ver propuesta →</span>
+    }
+  </div>
+</ng-template>

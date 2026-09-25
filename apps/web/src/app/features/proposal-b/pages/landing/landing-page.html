@@ -1,0 +1,166 @@
+<!-- Hero -->
+<section class="hero">
+  <img class="hero__bg" src="propuesta-b/hero.webp" alt="" fetchpriority="high" />
+  <div class="pb-container hero__inner">
+    <p class="pb-kicker hero__kicker">Instrumentación y control industrial</p>
+    <h1 class="hero__title">Medimos lo que tu proceso necesita. Te ayudamos a elegir bien.</h1>
+    <p class="hero__lead">
+      Transmisores, medidores, válvulas y automatización de más de 200 marcas, con asesoría técnica
+      desde la selección del equipo hasta la entrega.
+    </p>
+    <div class="hero__actions">
+      <a class="pb-btn pb-btn--amber hero__btn" [routerLink]="[]" fragment="que-medir">
+        ¿Qué necesitas medir? <app-icon name="arrowRight" [size]="18" />
+      </a>
+      <a class="pb-btn pb-btn--light hero__btn" [href]="whatsappUrl()" target="_blank" rel="noopener noreferrer">
+        <app-icon name="chat" [size]="18" /> Hablar con un asesor
+      </a>
+    </div>
+  </div>
+  <div class="hero__facts">
+    <div class="pb-container hero__facts-inner">
+      <div><strong>+200</strong><span>marcas representadas</span></div>
+      <div><strong>+1.000</strong><span>referencias en catálogo</span></div>
+      <div><strong>3 países</strong><span>Venezuela · Panamá · EE. UU.</span></div>
+      <div><strong>100 %</strong><span>pagos verificados por nuestro equipo</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- What do you need to measure -->
+<section class="pb-section" id="que-medir">
+  <div class="pb-container">
+    <div class="section-head">
+      <div>
+        <p class="pb-kicker">Soluciones</p>
+        <h2 class="pb-title">¿Qué necesitas medir o controlar?</h2>
+      </div>
+      <p class="section-head__lead">
+        Empieza por la variable de tu proceso: te mostramos los tipos de equipo, cómo elegir y los
+        modelos disponibles.
+      </p>
+    </div>
+
+    <ul class="variables">
+      @for (variable of variables; track variable.slug) {
+        <li>
+          <a class="variable" [routerLink]="paths.catalog" [queryParams]="{ cat: variable.slug }">
+            <img class="variable__photo" [src]="variable.photo" alt="" loading="lazy" />
+            <span class="variable__shade" aria-hidden="true"></span>
+            <span class="variable__content">
+              <span class="variable__name">{{ variable.name }}</span>
+              <strong class="variable__question">{{ variable.question }}</strong>
+              <span class="variable__desc">{{ variable.description }}</span>
+              <span class="variable__foot">
+                {{ variable.count }} {{ variable.count === 1 ? 'equipo' : 'equipos' }}
+                <span class="variable__arrow"><app-icon name="arrowRight" [size]="18" /></span>
+              </span>
+            </span>
+          </a>
+        </li>
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- Featured products -->
+<section class="pb-section featured">
+  <div class="pb-container">
+    <div class="section-head">
+      <div>
+        <p class="pb-kicker">Equipos destacados</p>
+        <h2 class="pb-title">Los más solicitados por nuestros clientes</h2>
+      </div>
+      <a class="pb-link" [routerLink]="paths.catalog">Ver todas las soluciones <app-icon name="arrowRight" [size]="16" /></a>
+    </div>
+    <ul class="products">
+      @for (product of featured; track product.sku) {
+        <li><app-product-card-b [product]="product" [summary]="catalog.getSummary(product.sku)" /></li>
+      }
+    </ul>
+    <p class="rate-note">Precios en USD. Equivalencia en bolívares según la tasa referencial del {{ catalog.exchangeRateDate }}.</p>
+  </div>
+</section>
+
+<!-- Method -->
+<section class="pb-section method">
+  <div class="pb-container method__grid">
+    <div>
+      <p class="pb-kicker">Cómo trabajamos</p>
+      <h2 class="pb-title">Del problema al equipo correcto, en tres pasos.</h2>
+      <a class="pb-btn pb-btn--amber method__cta" [href]="whatsappUrl()" target="_blank" rel="noopener noreferrer">
+        Empezar con un asesor
+      </a>
+    </div>
+    <ol class="steps">
+      @for (step of steps; track step.title; let i = $index) {
+        <li>
+          <span class="steps__n">{{ i + 1 }}</span>
+          <div>
+            <h3>{{ step.title }}</h3>
+            <p>{{ step.text }}</p>
+          </div>
+        </li>
+      }
+    </ol>
+  </div>
+</section>
+
+<!-- Advisors -->
+<section class="pb-section advisory" id="asesoria">
+  <div class="pb-container advisory__grid">
+    <figure class="advisory__media">
+      <img src="propuesta-b/workshop.webp" alt="Banco de trabajo con calibrador y fichas técnicas" loading="lazy" />
+      <figcaption>Te confirmamos compatibilidad, rango y materiales antes de comprar.</figcaption>
+    </figure>
+    <div>
+      <p class="pb-kicker">Asesoría técnica</p>
+      <h2 class="pb-title">Habla con alguien que conoce tu proceso.</h2>
+      <p class="pb-lead">
+        Seleccionamos contigo el instrumento correcto, revisamos compatibilidades y encontramos
+        reemplazos para equipos descontinuados.
+      </p>
+      <ul class="advisors">
+        @for (advisor of advisors; track advisor.initials) {
+          <li><app-advisor-card [advisor]="advisor" /></li>
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Brands -->
+<section class="pb-section" id="marcas">
+  <div class="pb-container">
+    <div class="section-head">
+      <div>
+        <p class="pb-kicker">Marcas</p>
+        <h2 class="pb-title">Fabricantes que respaldan cada equipo.</h2>
+      </div>
+      <p class="section-head__lead">Y más de 200 marcas disponibles bajo pedido.</p>
+    </div>
+    <ul class="brands">
+      @for (brand of brands; track brand) {
+        <li>
+          <a [routerLink]="paths.catalog" [queryParams]="{ brand: brand }">{{ brand }}</a>
+        </li>
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="descargas">
+  <div class="pb-container cta__inner">
+    <div>
+      <h2>¿No sabes qué modelo necesitas?</h2>
+      <p>Cuéntanos tu aplicación y te enviamos una recomendación con su ficha técnica.</p>
+    </div>
+    <div class="cta__actions">
+      <a class="pb-btn pb-btn--whatsapp" [href]="whatsappUrl()" target="_blank" rel="noopener noreferrer">
+        <app-icon name="chat" [size]="18" /> Escribir por WhatsApp
+      </a>
+      <a class="pb-btn pb-btn--outline cta__secondary" [routerLink]="paths.catalog">Explorar soluciones</a>
+    </div>
+  </div>
+</section>

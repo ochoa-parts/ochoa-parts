@@ -1,0 +1,140 @@
+<!-- Banner -->
+<section class="banner">
+  <div class="pc-container banner__inner">
+    <div class="banner__text">
+      <nav class="crumbs" aria-label="Ruta de navegación">
+        <a [routerLink]="paths.home">Inicio</a> / <a [routerLink]="paths.catalog">Catálogo</a>
+        @if (state.activeCategory(); as category) {
+          / <span>{{ category.name }}</span>
+        }
+      </nav>
+
+      @if (brandInfo(); as brand) {
+        <p class="banner__kicker">Distribuidor de la marca</p>
+        <h1 class="banner__title">{{ brand.name }}</h1>
+        <p class="banner__lead">{{ brand.count }} {{ brand.count === 1 ? 'producto' : 'productos' }} disponibles en nuestro catálogo.</p>
+        <div class="banner__chips">
+          @for (category of brand.categories; track category.slug) {
+            <button type="button" [class.is-active]="state.category() === category.slug" (click)="state.toggleCategory(category.slug)">
+              {{ category.name }}
+            </button>
+          }
+        </div>
+      } @else if (state.query()) {
+        <p class="banner__kicker">Resultados de búsqueda</p>
+        <h1 class="banner__title banner__title--mono">{{ state.query() }}</h1>
+      } @else if (state.activeCategory(); as category) {
+        <p class="banner__kicker">Categoría</p>
+        <h1 class="banner__title">{{ category.name }}</h1>
+        <p class="banner__lead">{{ category.description }}</p>
+      } @else {
+        <p class="banner__kicker">Catálogo</p>
+        <h1 class="banner__title">Todos los productos</h1>
+        <p class="banner__lead">Instrumentación, válvulas y automatización de fabricantes líderes.</p>
+      }
+    </div>
+
+    @if (brandInfo()?.image || state.activeCategory()?.image; as image) {
+      <div class="banner__media"><img [src]="image" alt="" /></div>
+    }
+  </div>
+</section>
+
+<div class="pc-container page">
+  <!-- Toolbar -->
+  <div class="toolbar" role="group" aria-label="Filtros">
+    <label class="field">
+      <span>Departamento</span>
+      <select [value]="state.category() ?? ''" (change)="onCategory($any($event.target).value)">
+        <option value="">Todos</option>
+        @for (facet of state.categoryFacets(); track facet.value) {
+          <option [value]="facet.value" [disabled]="!facet.count">{{ facet.label }} ({{ facet.count }})</option>
+        }
+      </select>
+    </label>
+    <label class="field">
+      <span>Tipo</span>
+      <select [value]="state.subcategory() ?? ''" (change)="onSubcategory($any($event.target).value)">
+        <option value="">Todos</option>
+        @for (facet of state.subcategoryFacets(); track facet.value) {
+          <option [value]="facet.value" [disabled]="!facet.count">{{ facet.label }} ({{ facet.count }})</option>
+        }
+      </select>
+    </label>
+    <label class="field">
+      <span>Marca</span>
+      <select [value]="activeBrand() ?? ''" (change)="onBrand($any($event.target).value)">
+        <option value="">Todas</option>
+        @for (facet of state.brandFacets(); track facet.value) {
+          <option [value]="facet.value" [disabled]="!facet.count">{{ facet.label }} ({{ facet.count }})</option>
+        }
+      </select>
+    </label>
+    <label class="field">
+      <span>Disponibilidad</span>
+      <select [value]="selectedStock()" (change)="onStock($any($event.target).value)">
+        <option value="">Todas</option>
+        @for (facet of state.stockFacets(); track facet.value) {
+          <option [value]="facet.value">{{ facet.label }} ({{ facet.count }})</option>
+        }
+      </select>
+    </label>
+    <label class="field">
+      <span>Precio</span>
+      <select [value]="priceRangeIndex()" (change)="onPriceRange($any($event.target).value)">
+        @for (range of priceRanges; track range.label; let i = $index) {
+          <option [value]="i">{{ range.label }}</option>
+        }
+      </select>
+    </label>
+    <label class="field">
+      <span>Ordenar</span>
+      <select [value]="state.sort()" (change)="state.setSort($any($event.target).value)">
+        @for (choice of sortChoices; track choice.value) {
+          <option [value]="choice.value">{{ choice.label }}</option>
+        }
+      </select>
+    </label>
+  </div>
+
+  <div class="bar">
+    <p class="bar__count" aria-live="polite">
+      <strong>{{ state.results().length }}</strong> {{ state.results().length === 1 ? 'producto' : 'productos' }}
+      @if (state.activeFilterCount() || state.query()) {
+        <button type="button" class="bar__clear" (click)="state.resetAll()">Limpiar filtros</button>
+      }
+    </p>
+    <div class="bar__view" role="group" aria-label="Vista">
+      <button type="button" [class.is-active]="view() === 'grid'" [attr.aria-pressed]="view() === 'grid'" (click)="view.set('grid')">
+        <app-icon name="grid" [size]="16" /> Tarjetas
+      </button>
+      <button type="button" [class.is-active]="view() === 'table'" [attr.aria-pressed]="view() === 'table'" (click)="view.set('table')">
+        <app-icon name="list" [size]="16" /> Tabla
+      </button>
+    </div>
+  </div>
+
+  @if (state.results().length) {
+    @if (view() === 'grid') {
+      <ul class="grid">
+        @for (product of state.results(); track product.sku) {
+          <li><app-product-card-c [product]="product" /></li>
+        }
+      </ul>
+    } @else {
+      <app-product-table [groups]="groups()" [(sort)]="state.sort" />
+    }
+  } @else {
+    <div class="empty">
+      <app-icon name="package" [size]="40" />
+      <strong>No encontramos productos con estos filtros.</strong>
+      <span>Verifica el código o consúltanos: conseguimos referencias de más de 200 marcas.</span>
+      <div class="empty__actions">
+        <button type="button" class="pc-btn pc-btn--ghost" (click)="state.resetAll()">Ver todo el catálogo</button>
+        <a class="pc-btn pc-btn--whatsapp" [href]="whatsappSearchUrl()" target="_blank" rel="noopener noreferrer">
+          <app-icon name="chat" [size]="16" /> Consultar por WhatsApp
+        </a>
+      </div>
+    </div>
+  }
+</div>

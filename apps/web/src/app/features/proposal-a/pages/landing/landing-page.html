@@ -1,0 +1,174 @@
+<!-- Hero -->
+<section class="hero">
+  <img class="hero__bg" src="propuesta-a/hero.webp" alt="" fetchpriority="high" />
+  <div class="pa-container hero__inner">
+    <p class="eyebrow eyebrow--light">Distribuidor de instrumentación y control industrial</p>
+    <h1 class="hero__title">La instrumentación que tu planta necesita, con respaldo de más de 200 marcas.</h1>
+    <p class="hero__lead">
+      Transmisores, medidores de caudal, válvulas de control, automatización y más. Consulta
+      precios y disponibilidad en línea y haz tu pedido cuando lo necesites.
+    </p>
+    <div class="hero__actions">
+      <a class="btn btn--primary btn--lg" [routerLink]="catalogPath">
+        Ver catálogo
+        <app-icon name="arrowRight" [size]="18" />
+      </a>
+      <a class="btn btn--ghost btn--lg" [routerLink]="[]" fragment="contacto">
+        <app-icon name="chat" [size]="18" />
+        Hablar con un asesor
+      </a>
+    </div>
+
+    <dl class="stats">
+      @for (stat of stats; track stat.label) {
+        <div class="stats__item">
+          <dt>{{ stat.label }}</dt>
+          <dd>{{ stat.value }}</dd>
+        </div>
+      }
+    </dl>
+  </div>
+</section>
+
+<!-- About -->
+<section class="section" id="nosotros">
+  <div class="pa-container about">
+    <div class="about__media">
+      <img src="propuesta-a/about.webp" alt="Técnico calibrando un transmisor de presión" loading="lazy" />
+    </div>
+    <div class="about__content">
+      <p class="eyebrow">Quiénes somos</p>
+      <h2 class="section__title">Tu aliado en instrumentación y control industrial</h2>
+      <p>
+        En Inversiones Ochoa Parts suministramos instrumentación y equipos de control para las
+        industrias de petróleo y gas, agua, energía, alimentos y manufactura. Trabajamos con los
+        fabricantes más reconocidos del mercado para que encuentres la referencia exacta que tu
+        proceso requiere.
+      </p>
+      <ul class="values">
+        @for (value of values; track value.title) {
+          <li class="values__item">
+            <span class="values__icon"><app-icon [name]="value.icon" /></span>
+            <div>
+              <h3>{{ value.title }}</h3>
+              <p>{{ value.text }}</p>
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Solutions -->
+<section class="section section--muted" id="soluciones">
+  <div class="pa-container">
+    <div class="section__head">
+      <div>
+        <p class="eyebrow">Soluciones</p>
+        <h2 class="section__title">Todo para medir, controlar y automatizar</h2>
+      </div>
+      <a class="link-arrow" [routerLink]="catalogPath">
+        Explorar catálogo <app-icon name="arrowRight" [size]="16" />
+      </a>
+    </div>
+
+    <ul class="solutions">
+      @for (category of categories; track category.slug) {
+        <li>
+          <a class="solution" [routerLink]="catalogPath" [queryParams]="{ cat: category.slug }">
+            <img [src]="category.image" [alt]="category.name" loading="lazy" />
+            <span class="solution__text">
+              <strong>{{ category.name }}</strong>
+              <span>{{ category.description }}</span>
+            </span>
+            <app-icon name="arrowRight" class="solution__arrow" [size]="18" />
+          </a>
+        </li>
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- Featured products -->
+<section class="section">
+  <div class="pa-container">
+    <div class="section__head">
+      <div>
+        <p class="eyebrow">Destacados</p>
+        <h2 class="section__title">Productos destacados</h2>
+      </div>
+      <a class="link-arrow" [routerLink]="catalogPath">
+        Ver todos <app-icon name="arrowRight" [size]="16" />
+      </a>
+    </div>
+
+    <ul class="products">
+      @for (product of featured; track product.sku) {
+        <li><app-product-card [product]="product" [exchangeRateDate]="exchangeRateDate" /></li>
+      }
+    </ul>
+
+    <p class="rate-note">
+      Precios en USD. Equivalencia en bolívares según la tasa referencial del {{ exchangeRateDate }}.
+    </p>
+  </div>
+</section>
+
+<!-- Brands -->
+<section class="section section--muted" id="marcas">
+  <div class="pa-container">
+    <div class="section__head section__head--center">
+      <div>
+        <p class="eyebrow">Marcas</p>
+        <h2 class="section__title">Trabajamos con fabricantes líderes</h2>
+      </div>
+    </div>
+    <ul class="brands">
+      @for (brand of brands; track brand) {
+        <li class="brands__item">{{ brand }}</li>
+      }
+    </ul>
+    <p class="brands__note">Y más de 200 marcas disponibles en nuestro catálogo.</p>
+  </div>
+</section>
+
+<!-- How to buy -->
+<section class="section" id="como-comprar">
+  <div class="pa-container">
+    <div class="section__head section__head--center">
+      <div>
+        <p class="eyebrow">Cómo comprar</p>
+        <h2 class="section__title">Tu pedido en cuatro pasos</h2>
+      </div>
+    </div>
+    <ol class="steps">
+      @for (step of steps; track step.title; let i = $index) {
+        <li class="steps__item">
+          <span class="steps__number">{{ i + 1 }}</span>
+          <span class="steps__icon"><app-icon [name]="step.icon" [size]="26" /></span>
+          <h3>{{ step.title }}</h3>
+          <p>{{ step.text }}</p>
+        </li>
+      }
+    </ol>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="pa-container cta__inner">
+    <div>
+      <h2>¿Listo para cotizar?</h2>
+      <p>Busca por SKU, marca o categoría y consulta precios y disponibilidad al instante.</p>
+    </div>
+    <div class="cta__actions">
+      <a class="btn btn--dark btn--lg" [routerLink]="catalogPath">
+        Ir al catálogo <app-icon name="arrowRight" [size]="18" />
+      </a>
+      <a class="btn btn--whatsapp btn--lg" [routerLink]="[]" fragment="contacto">
+        <app-icon name="chat" [size]="18" /> WhatsApp
+      </a>
+    </div>
+  </div>
+</section>

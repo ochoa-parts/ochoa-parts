@@ -1,0 +1,110 @@
+<div class="wrap">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col" class="col-toggle"><span class="sr-only">Detalle</span></th>
+        <th scope="col">SKU / Código</th>
+        <th scope="col">Marca</th>
+        <th scope="col" [attr.aria-sort]="ariaSort('name')">
+          @if (sortable()) {
+            <button type="button" class="sort" (click)="sortBy('name')">Descripción</button>
+          } @else {
+            Descripción
+          }
+        </th>
+        <th scope="col" [attr.aria-sort]="ariaSort('availability')">
+          @if (sortable()) {
+            <button type="button" class="sort" (click)="sortBy('availability')">Disponibilidad</button>
+          } @else {
+            Disponibilidad
+          }
+        </th>
+        <th scope="col" class="num" [attr.aria-sort]="ariaSort('price')">
+          @if (sortable()) {
+            <button type="button" class="sort" (click)="sortBy('price')">
+              USD
+              @if (sort() === 'price_asc') { ▲ } @else if (sort() === 'price_desc') { ▼ }
+            </button>
+          } @else {
+            USD
+          }
+        </th>
+        <th scope="col" class="num">Bs ref.</th>
+        <th scope="col" class="col-qty">Cant.</th>
+        <th scope="col"><span class="sr-only">Agregar</span></th>
+      </tr>
+    </thead>
+
+    @for (group of groups(); track group.title ?? $index) {
+      <tbody>
+        @if (group.title) {
+          <tr class="group">
+            <th colspan="9" scope="rowgroup">
+              {{ group.title }} <span>{{ group.products.length }}</span>
+            </th>
+          </tr>
+        }
+        @for (product of group.products; track product.sku) {
+          <tr class="row" [class.is-open]="expanded().has(product.sku)">
+            <td class="col-toggle">
+              <button
+                type="button"
+                class="toggle"
+                [attr.aria-expanded]="expanded().has(product.sku)"
+                [attr.aria-label]="'Ver detalle de ' + product.sku"
+                (click)="toggleRow(product.sku)"
+              >
+                {{ expanded().has(product.sku) ? '−' : '+' }}
+              </button>
+            </td>
+            <td class="pc-mono sku">
+              <a [routerLink]="paths.product(product.slug)">{{ product.sku }}</a>
+            </td>
+            <td class="brand">{{ product.brand }}</td>
+            <td>{{ product.name }}</td>
+            <td><app-stock-badge [status]="product.stockStatus" /></td>
+            <td class="num price">{{ product.priceUsd | money: 'USD' }}</td>
+            <td class="num muted">{{ product.priceBs | money: 'Bs' }}</td>
+            <td class="col-qty">
+              <input
+                type="number"
+                min="1"
+                value="1"
+                inputmode="numeric"
+                [attr.aria-label]="'Cantidad de ' + product.sku"
+                [disabled]="product.stockStatus !== 'available'"
+              />
+            </td>
+            <td>
+              <button
+                type="button"
+                class="add"
+                [disabled]="product.stockStatus !== 'available'"
+                [attr.aria-label]="'Agregar ' + product.sku + ' al carrito'"
+              >
+                <app-icon name="cart" [size]="16" />
+              </button>
+            </td>
+          </tr>
+          @if (expanded().has(product.sku)) {
+            <tr class="detail">
+              <td></td>
+              <td colspan="8">
+                <div class="detail__inner">
+                  <img [src]="product.image" [alt]="product.name" loading="lazy" />
+                  <div>
+                    <p><strong>{{ product.name }}</strong></p>
+                    <p class="muted">{{ product.brand }} · <span class="pc-mono">{{ product.sku }}</span></p>
+                    <a class="pc-link" [routerLink]="paths.product(product.slug)">
+                      Ver hoja técnica completa →
+                    </a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    }
+  </table>
+</div>

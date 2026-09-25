@@ -1,0 +1,18 @@
+# Dependencies and build output
+node_modules/
+dist/
+out-tsc/
+.angular/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.idea/

@@ -1,0 +1,16 @@
+<section class="intro" aria-labelledby="page-title">
+  <p class="intro__eyebrow">Plataforma web B2B · Landing page</p>
+  <h1 id="page-title">Propuestas de diseño</h1>
+  <p class="intro__lead">
+    Tres enfoques distintos para la página de inicio. Selecciona una tarjeta para ver la propuesta
+    completa.
+  </p>
+</section>
+
+<ul class="grid" aria-label="Propuestas de landing page">
+  @for (proposal of proposals; track proposal.id) {
+    <li class="grid__item">
+      <app-proposal-card [proposal]="proposal" />
+    </li>
+  }
+</ul>

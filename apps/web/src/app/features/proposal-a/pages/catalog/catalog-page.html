@@ -1,0 +1,140 @@
+<!-- Search hero -->
+<section class="search-hero">
+  <div class="pa-container search-hero__inner">
+    <h1 class="search-hero__title">Catálogo de instrumentación y control</h1>
+    <p class="search-hero__lead">Busca por referencia exacta, SKU parcial, producto o marca.</p>
+
+    <app-search-box
+      class="search-hero__box"
+      [(query)]="query"
+      [products]="products"
+      [categories]="categories"
+      (categorySelected)="category.set($event)"
+    />
+
+    <ul class="chips" aria-label="Categorías rápidas">
+      @for (item of categories; track item.slug) {
+        <li>
+          <button
+            type="button"
+            class="chip"
+            [class.is-active]="category() === item.slug"
+            [attr.aria-pressed]="category() === item.slug"
+            (click)="selectCategory(item.slug)"
+          >
+            {{ item.name }}
+          </button>
+        </li>
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- Results -->
+<section class="pa-container catalog">
+  <aside class="catalog__filters">
+    <app-catalog-filters
+      [categoryFacets]="categoryFacets()"
+      [brandFacets]="brandFacets()"
+      [stockFacets]="stockFacets()"
+      [(category)]="category"
+      [(brands)]="brands"
+      [(stock)]="stock"
+    />
+  </aside>
+
+  <div class="catalog__main">
+    <div class="toolbar">
+      <p class="toolbar__count" aria-live="polite">
+        <strong>{{ results().length }}</strong>
+        {{ results().length === 1 ? 'producto' : 'productos' }}
+        @if (query()) {
+          para «{{ query() }}»
+        }
+        @if (activeCategoryName(); as name) {
+          en {{ name }}
+        }
+      </p>
+
+      <div class="toolbar__controls">
+        <label class="sort">
+          <span>Ordenar por</span>
+          <select [value]="sort()" (change)="onSortChange($any($event.target).value)">
+            @for (choice of sortChoices; track choice.value) {
+              <option [value]="choice.value">{{ choice.label }}</option>
+            }
+          </select>
+        </label>
+
+        <div class="view-toggle" role="group" aria-label="Vista">
+          <button
+            type="button"
+            [class.is-active]="view() === 'grid'"
+            [attr.aria-pressed]="view() === 'grid'"
+            aria-label="Vista en cuadrícula"
+            (click)="view.set('grid')"
+          >
+            <app-icon name="grid" [size]="18" />
+          </button>
+          <button
+            type="button"
+            [class.is-active]="view() === 'list'"
+            [attr.aria-pressed]="view() === 'list'"
+            aria-label="Vista en lista"
+            (click)="view.set('list')"
+          >
+            <app-icon name="list" [size]="18" />
+          </button>
+        </div>
+      </div>
+    </div>
+
+    @if (results().length) {
+      <ul class="results" [class.results--list]="view() === 'list'">
+        @for (product of results(); track product.sku) {
+          <li>
+            <app-product-card
+              [product]="product"
+              [exchangeRateDate]="exchangeRateDate"
+              [layout]="view()"
+            />
+          </li>
+        }
+      </ul>
+
+      <nav class="pagination" aria-label="Paginación">
+        <button type="button" disabled>Anterior</button>
+        <span class="pagination__page is-current" aria-current="page">1</span>
+        <button type="button" disabled>Siguiente</button>
+      </nav>
+    } @else {
+      <div class="empty">
+        <app-icon name="package" [size]="40" />
+        <h2>No encontramos productos para tu búsqueda</h2>
+        <p>Revisa la referencia o prueba con otra marca o categoría. Si no lo encuentras, escríbenos.</p>
+        <div class="empty__actions">
+          <button type="button" class="btn btn--primary" (click)="resetAll()">Ver todo el catálogo</button>
+          <a class="btn btn--whatsapp" [routerLink]="[]" fragment="contacto">
+            <app-icon name="chat" [size]="18" /> Consultar por WhatsApp
+          </a>
+        </div>
+      </div>
+    }
+
+    <p class="rate-note">
+      Precios en USD. Equivalencia en bolívares según la tasa referencial del {{ exchangeRateDate }}.
+    </p>
+  </div>
+</section>
+
+<!-- Not found CTA -->
+<section class="help">
+  <div class="pa-container help__inner">
+    <app-icon name="chat" [size]="32" />
+    <div>
+      <h2>¿No encuentras una referencia?</h2>
+      <p>Nuestro equipo comercial te ayuda a ubicarla. Escríbenos con el SKU o la ficha técnica.</p>
+    </div>
+    <a class="btn btn--whatsapp btn--lg" [routerLink]="[]" fragment="contacto">Escribir por WhatsApp</a>
+  </div>
+</section>

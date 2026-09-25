@@ -1,0 +1,115 @@
+@if (product(); as product) {
+  <div class="pa-container page">
+    <nav class="breadcrumb" aria-label="Ruta de navegación">
+      <ol>
+        @for (crumb of crumbs(); track crumb.label) {
+          <li>
+            <a [routerLink]="crumb.path" [queryParams]="crumb.queryParams">{{ crumb.label }}</a>
+          </li>
+        }
+        <li aria-current="page">{{ product.name }}</li>
+      </ol>
+    </nav>
+
+    <section class="hero">
+      <app-product-gallery [images]="product.gallery" [alt]="product.name" />
+      <app-product-buy-box
+        [product]="product"
+        [exchangeRateDate]="exchangeRateDate"
+        [whatsappNumber]="whatsappNumber"
+      />
+    </section>
+
+    <nav class="jump" aria-label="Secciones del producto">
+      <a [routerLink]="[]" fragment="descripcion">Descripción</a>
+      <a [routerLink]="[]" fragment="especificaciones">Especificaciones</a>
+      <a [routerLink]="[]" fragment="documentos">Documentos</a>
+      @if (related().length) {
+        <a [routerLink]="[]" fragment="relacionados">Relacionados</a>
+      }
+    </nav>
+
+    <div class="details">
+      <section class="block" id="descripcion">
+        <h2 class="block__title">Descripción</h2>
+        <p class="block__text">{{ product.description }}</p>
+      </section>
+
+      <section class="block" id="especificaciones">
+        <h2 class="block__title">Especificaciones técnicas</h2>
+        <table class="specs">
+          <tbody>
+            <tr>
+              <th scope="row">Marca</th>
+              <td>{{ product.brand }}</td>
+            </tr>
+            <tr>
+              <th scope="row">SKU</th>
+              <td class="mono">{{ product.sku }}</td>
+            </tr>
+            @for (spec of product.specs; track spec.label) {
+              <tr>
+                <th scope="row">{{ spec.label }}</th>
+                <td>{{ spec.value }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </section>
+
+      <section class="block" id="documentos">
+        <h2 class="block__title">Documentos</h2>
+        @if (product.files.length) {
+          <ul class="files">
+            @for (file of product.files; track file.type) {
+              <li>
+                <button type="button" class="file">
+                  <span class="file__icon"><app-icon name="file" /></span>
+                  <span class="file__text">
+                    <strong>{{ file.name }}</strong>
+                    <span>{{ file.sizeLabel }}</span>
+                  </span>
+                  <span class="file__action">Descargar</span>
+                </button>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="block__text">Este producto no tiene documentos disponibles.</p>
+        }
+      </section>
+    </div>
+
+    @if (related().length) {
+      <section class="related" id="relacionados">
+        <div class="related__head">
+          <h2 class="block__title">Productos relacionados</h2>
+          <a class="link-arrow" [routerLink]="paths.catalog" [queryParams]="{ cat: product.category.slug }">
+            Ver más en {{ product.category.name }} <app-icon name="arrowRight" [size]="16" />
+          </a>
+        </div>
+        <ul class="related__grid">
+          @for (item of related(); track item.sku) {
+            <li><app-product-card [product]="item" [exchangeRateDate]="exchangeRateDate" /></li>
+          }
+        </ul>
+      </section>
+    }
+  </div>
+} @else {
+  <div class="pa-container not-found">
+    <app-icon name="package" [size]="48" />
+    <h1>Producto no disponible</h1>
+    <p>
+      El producto que buscas no existe o ya no está disponible. Prueba buscarlo por su referencia en
+      el catálogo o revisa estas sugerencias.
+    </p>
+    <a class="btn btn--primary btn--lg" [routerLink]="paths.catalog">Ir al catálogo</a>
+
+    <ul class="related__grid not-found__grid">
+      @for (item of related(); track item.sku) {
+        <li><app-product-card [product]="item" [exchangeRateDate]="exchangeRateDate" /></li>
+      }
+    </ul>
+  </div>
+}

@@ -1,0 +1,55 @@
+<form class="search" role="search" (submit)="$event.preventDefault(); submit()">
+  <label class="search__field">
+    <span class="sr-only">Buscar productos</span>
+    <app-icon name="search" class="search__icon" />
+    <input
+      type="search"
+      autocomplete="off"
+      [placeholder]="placeholder()"
+      [value]="draft()"
+      [attr.aria-expanded]="showDropdown()"
+      aria-controls="search-suggestions"
+      (input)="onInput($any($event.target).value)"
+      (focus)="open.set(true)"
+    />
+  </label>
+  <button type="submit" class="search__submit">Buscar</button>
+</form>
+
+@if (showDropdown()) {
+  <div class="dropdown" id="search-suggestions">
+    @if (productSuggestions().length) {
+      <p class="dropdown__label">Productos</p>
+      <ul class="dropdown__list">
+        @for (product of productSuggestions(); track product.sku) {
+          <li>
+            <button type="button" class="suggestion" (click)="pickProduct(product)">
+              <img [src]="product.image" alt="" class="suggestion__img" />
+              <span class="suggestion__text">
+                <span class="suggestion__meta">{{ product.brand }} · {{ product.sku }}</span>
+                <span class="suggestion__name">{{ product.name }}</span>
+              </span>
+              <app-stock-badge [status]="product.stockStatus" />
+            </button>
+          </li>
+        }
+      </ul>
+    }
+
+    @if (categorySuggestions().length) {
+      <p class="dropdown__label">Categorías</p>
+      <ul class="dropdown__list">
+        @for (category of categorySuggestions(); track category.slug) {
+          <li>
+            <button type="button" class="suggestion" (click)="pickCategory(category)">
+              <span class="suggestion__text">
+                <span class="suggestion__name">{{ category.name }}</span>
+                <span class="suggestion__meta">{{ category.description }}</span>
+              </span>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+}

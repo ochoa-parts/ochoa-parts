@@ -1,0 +1,35 @@
+<article class="product">
+  <div class="product__media">
+    <a [routerLink]="detailPath()" tabindex="-1" aria-hidden="true">
+      <img [src]="product().image" [alt]="product().name" loading="lazy" decoding="async" />
+    </a>
+    <button type="button" class="product__fav" aria-label="Agregar a favoritos">
+      <app-icon name="heart" [size]="18" />
+    </button>
+  </div>
+
+  <div class="product__body">
+    <span class="product__brand">{{ product().brand }}</span>
+    <span class="product__sku">{{ product().sku }}</span>
+    <h3 class="product__name">
+      <a [routerLink]="detailPath()">{{ product().name }}</a>
+    </h3>
+    <app-stock-badge [status]="product().stockStatus" />
+
+    <div class="product__price">
+      <strong>{{ product().priceUsd | money: 'USD' }}</strong>
+      <span [title]="'Tasa referencial del ' + exchangeRateDate()">
+        Ref. {{ product().priceBs | money: 'Bs' }}
+      </span>
+    </div>
+
+    <button
+      type="button"
+      class="product__cta"
+      [disabled]="product().stockStatus === 'out_of_stock'"
+    >
+      <app-icon name="cart" [size]="16" />
+      {{ product().stockStatus === 'out_of_stock' ? 'Sin existencia' : 'Agregar al carrito' }}
+    </button>
+  </div>
+</article>

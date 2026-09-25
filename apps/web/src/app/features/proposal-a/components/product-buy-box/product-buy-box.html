@@ -1,0 +1,103 @@
+<div class="buy">
+  <a class="buy__brand" [routerLink]="catalogPath" [queryParams]="{ brand: product().brand }">
+    {{ product().brand }}
+  </a>
+  <h1 class="buy__name">{{ product().name }}</h1>
+
+  <dl class="buy__ids">
+    <div>
+      <dt>SKU</dt>
+      <dd class="mono">{{ product().sku }}</dd>
+    </div>
+    <div>
+      <dt>Categoría</dt>
+      <dd>
+        <a [routerLink]="catalogPath" [queryParams]="{ cat: product().category.slug }">
+          {{ product().category.name }}
+        </a>
+      </dd>
+    </div>
+  </dl>
+
+  <div class="buy__stock">
+    <app-stock-badge [status]="product().stockStatus" />
+    @switch (product().stockStatus) {
+      @case ('available') {
+        <span>{{ product().stockQty }} unidades disponibles</span>
+      }
+      @case ('incoming') {
+        <span>En tránsito. Consulta la fecha estimada de llegada.</span>
+      }
+      @default {
+        <span>Sin existencia por ahora. Te avisamos cuando llegue.</span>
+      }
+    }
+  </div>
+
+  <div class="buy__price">
+    <strong>{{ product().priceUsd | money: 'USD' }}</strong>
+    <span class="buy__bs">
+      Ref. {{ product().priceBs | money: 'Bs' }} · Tasa referencial del {{ exchangeRateDate() }}
+    </span>
+    <span class="buy__tax">Precio sin impuesto. El impuesto se calcula al generar el pedido.</span>
+  </div>
+
+  @if (canBuy()) {
+    <div class="buy__actions">
+      <div class="qty" role="group" aria-label="Cantidad">
+        <button
+          type="button"
+          aria-label="Disminuir cantidad"
+          [disabled]="quantity() <= 1"
+          (click)="changeQuantity(-1)"
+        >
+          −
+        </button>
+        <input
+          type="number"
+          inputmode="numeric"
+          min="1"
+          [max]="maxQuantity()"
+          [value]="quantity()"
+          aria-label="Cantidad"
+          (change)="onQuantityInput($any($event.target).value)"
+        />
+        <button
+          type="button"
+          aria-label="Aumentar cantidad"
+          [disabled]="quantity() >= maxQuantity()"
+          (click)="changeQuantity(1)"
+        >
+          +
+        </button>
+      </div>
+
+      <button type="button" class="btn btn--primary btn--lg buy__cart">
+        <app-icon name="cart" [size]="18" />
+        Agregar al carrito
+      </button>
+    </div>
+  } @else {
+    <p class="buy__unavailable">
+      Este producto no se puede agregar al carrito por ahora. Escríbenos y te confirmamos
+      disponibilidad y tiempo de entrega.
+    </p>
+  }
+
+  <div class="buy__secondary">
+    <a class="btn btn--whatsapp" [href]="whatsappUrl()" target="_blank" rel="noopener noreferrer">
+      <app-icon name="chat" [size]="18" />
+      Consultar por WhatsApp
+    </a>
+    <button type="button" class="btn btn--outline">
+      <app-icon name="heart" [size]="18" />
+      Guardar en favoritos
+    </button>
+  </div>
+
+  <ul class="buy__trust">
+    <li><app-icon name="shield" [size]="18" /> Pago verificado por nuestro equipo</li>
+    <li><app-icon name="truck" [size]="18" /> Despacho a toda Venezuela</li>
+    <li><app-icon name="file" [size]="18" /> Soporte técnico para la selección del equipo</li>
+  </ul>
+</div>

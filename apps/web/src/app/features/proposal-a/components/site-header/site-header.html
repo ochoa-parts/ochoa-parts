@@ -1,0 +1,64 @@
+<div class="infobar">
+  <div class="pa-container infobar__inner">
+    <span class="infobar__item">
+      <app-icon name="pin" [size]="14" />
+      Venezuela · Panamá · Estados Unidos
+    </span>
+    <span class="infobar__item infobar__rate">
+      <app-icon name="dollar" [size]="14" />
+      Tasa referencial del {{ exchangeRateDate() }}
+    </span>
+  </div>
+</div>
+
+<header class="header">
+  <div class="pa-container header__inner">
+    <a class="logo" [routerLink]="homePath" aria-label="Ochoa Parts, ir al inicio" (click)="closeMenu()">
+      <img src="propuesta-a/logo-ochoa-parts.jpeg" alt="Ochoa Parts Automation" width="118" height="44" />
+    </a>
+
+    <nav class="nav" [class.is-open]="menuOpen()" aria-label="Principal">
+      <a
+        class="nav__link"
+        [routerLink]="catalogPath"
+        routerLinkActive="is-active"
+        (click)="closeMenu()"
+      >
+        Catálogo
+      </a>
+      @for (link of navLinks; track link.fragment) {
+        <a
+          class="nav__link"
+          [routerLink]="homePath"
+          [fragment]="link.fragment"
+          (click)="closeMenu()"
+        >
+          {{ link.label }}
+        </a>
+      }
+    </nav>
+
+    <div class="actions">
+      <button type="button" class="icon-btn" aria-label="Favoritos">
+        <app-icon name="heart" />
+      </button>
+      <button type="button" class="icon-btn" aria-label="Carrito, 3 productos">
+        <app-icon name="cart" />
+        <span class="icon-btn__badge" aria-hidden="true">3</span>
+      </button>
+      <button type="button" class="login-btn">
+        <app-icon name="user" [size]="18" />
+        <span>Ingresar</span>
+      </button>
+      <button
+        type="button"
+        class="icon-btn menu-btn"
+        [attr.aria-expanded]="menuOpen()"
+        aria-label="Abrir menú"
+        (click)="toggleMenu()"
+      >
+        <app-icon [name]="menuOpen() ? 'close' : 'list'" />
+      </button>
+    </div>
+  </div>
+</header>
