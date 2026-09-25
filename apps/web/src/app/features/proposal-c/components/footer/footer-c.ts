@@ -7,72 +7,100 @@ import { PC_PATHS } from '../../proposal-c.paths';
   imports: [RouterLink],
   template: `
     <footer class="footer" id="contacto">
-      <div class="pc-container footer__inner">
-        <div class="footer__col">
-          <strong>Inversiones Ochoa Parts, C.A.</strong>
-          <span>RIF: por confirmar · Venezuela · Panamá · EE. UU.</span>
+      <div class="pc-container footer__top">
+        <p class="footer__claim pc-display">Instrumentación de marcas líderes.<br /><span>Un solo proveedor.</span></p>
+        <div class="footer__cols">
+          <nav aria-label="Accesos">
+            <h2>Explorar</h2>
+            <a [routerLink]="paths.home" fragment="marcas">Marcas</a>
+            <a [routerLink]="paths.catalog">Catálogo</a>
+            <a [routerLink]="paths.home" fragment="pedido-rapido">Pedido rápido</a>
+          </nav>
+          <div>
+            <h2>Pagos verificados</h2>
+            <p>Zelle · Pago móvil · Transferencia nacional e internacional · Efectivo USD / EUR</p>
+          </div>
+          <div>
+            <h2>Empresa</h2>
+            <p>Inversiones Ochoa Parts, C.A.<br />RIF: por confirmar<br />Venezuela · Panamá · EE. UU.</p>
+          </div>
         </div>
-        <div class="footer__col">
-          <strong>Pagos verificados</strong>
-          <span>Zelle · Pago móvil · Transferencia nacional e internacional · Efectivo USD / EUR</span>
-        </div>
-        <nav class="footer__col" aria-label="Enlaces">
-          <strong>Accesos</strong>
-          <span>
-            <a [routerLink]="paths.home" fragment="pedido-rapido">Pedido rápido</a> ·
-            <a [routerLink]="paths.home" fragment="marcas">Marcas</a> ·
-            <a [routerLink]="paths.home" fragment="descargas">Descargas</a>
-          </span>
-        </nav>
       </div>
       <div class="pc-container footer__legal">© 2026 Inversiones Ochoa Parts, C.A.</div>
     </footer>
   `,
   styles: `
     .footer {
-      background: var(--pc-graphite);
-      color: rgba(255, 255, 255, 0.75);
-      font-size: 0.8125rem;
+      padding-bottom: 72px;
+      background: var(--pc-panel-2);
+      border-top: 1px solid var(--pc-line);
+      color: var(--pc-muted);
+      font-size: 0.875rem;
       scroll-margin-top: 110px;
     }
 
-    .footer__inner {
+    .footer__top {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      padding-top: 28px;
-      padding-bottom: 20px;
+      grid-template-columns: 1.2fr 2fr;
+      gap: 40px;
+      padding-top: 56px;
+      padding-bottom: 32px;
     }
 
-    .footer__col {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+    .footer__claim {
+      margin: 0;
+      font-size: 2rem;
+      line-height: 1.05;
+      color: var(--pc-text);
 
-      strong {
-        color: #fff;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
+      span {
+        color: var(--pc-primary);
       }
     }
 
+    .footer__cols {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+
+      nav {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--pc-text);
+    }
+
+    p {
+      margin: 0;
+      line-height: 1.7;
+    }
+
     a {
-      color: var(--pc-yellow);
+      color: var(--pc-muted);
       text-decoration: none;
 
       &:hover {
-        text-decoration: underline;
+        color: var(--pc-primary);
       }
     }
 
     .footer__legal {
-      padding-top: 12px;
-      padding-bottom: 16px;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      padding-top: 16px;
+      border-top: 1px solid var(--pc-line);
+      font-size: 0.8125rem;
     }
 
-    @media (max-width: 760px) {
-      .footer__inner {
+    @media (max-width: 860px) {
+      .footer__top,
+      .footer__cols {
         grid-template-columns: 1fr;
       }
     }

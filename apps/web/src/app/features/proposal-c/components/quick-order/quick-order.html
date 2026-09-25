@@ -13,7 +13,7 @@
       (input)="text.set($any($event.target).value)"
     ></textarea>
     <div class="qo__actions">
-      <button type="button" class="pc-btn pc-btn--yellow" [disabled]="!text().trim()" (click)="lookup()">
+      <button type="button" class="pc-btn pc-btn--primary" [disabled]="!text().trim()" (click)="lookup()">
         <app-icon name="search" [size]="16" /> Buscar referencias
       </button>
       <button type="button" class="pc-btn pc-btn--ghost qo__example" (click)="useExample()">Probar con ejemplo</button>
@@ -40,11 +40,11 @@
               <td class="pc-mono">{{ line.term }}</td>
               <td>
                 @if (line.product; as product) {
-                  <a class="pc-link" [routerLink]="paths.product(product.slug)">{{ product.brand }} {{ product.sku }}</a>
+                  <a class="qo__link" [routerLink]="paths.product(product.slug)">{{ product.brand }} {{ product.sku }}</a>
                   <app-stock-badge [status]="product.stockStatus" />
                 } @else {
                   <span class="qo__missing">No encontrado</span>
-                  <a class="pc-link" [href]="whatsappFor(line.term)" target="_blank" rel="noopener noreferrer">Consultar</a>
+                  <a class="qo__link" [href]="whatsappFor(line.term)" target="_blank" rel="noopener noreferrer">Consultar</a>
                 }
               </td>
               <td class="num">{{ line.quantity }}</td>
@@ -61,7 +61,7 @@
       </table>
       <div class="qo__footer">
         <span>{{ availableCount() }} de {{ lines().length }} referencias disponibles para agregar</span>
-        <button type="button" class="pc-btn pc-btn--dark" [disabled]="!availableCount()">
+        <button type="button" class="pc-btn pc-btn--primary" [disabled]="!availableCount()">
           <app-icon name="cart" [size]="16" /> Agregar disponibles al carrito
         </button>
       </div>

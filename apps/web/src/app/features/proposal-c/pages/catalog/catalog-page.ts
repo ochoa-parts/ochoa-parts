@@ -10,7 +10,7 @@ import { ProductCardC } from '../../components/product-card-c/product-card-c';
 import { ProductGroup, ProductTable } from '../../components/product-table/product-table';
 import { PC_PATHS } from '../../proposal-c.paths';
 
-/** Showroom catalog: brand/category banner, selector toolbar, photo grid or pro table view. */
+/** Brand-first catalog: brand rail as primary navigation, category tabs, cards or table. */
 @Component({
   selector: 'app-catalog-page-c',
   imports: [RouterLink, Icon, ProductCardC, ProductTable],
@@ -44,19 +44,19 @@ export class CatalogPageC {
     { q: this.q, cat: this.cat, brand: this.brand, sub: this.sub },
   );
 
-  /** Single active brand drives the brand banner. */
+  /** "Todo" tab count: every category under the other active filters. */
+  protected readonly allCategoriesCount = computed(() =>
+    this.state.categoryFacets().reduce((sum, facet) => sum + facet.count, 0),
+  );
+
+  /** Single active brand drives the brand spotlight above the results. */
   protected readonly activeBrand = computed(() =>
     this.state.brands().length === 1 ? this.state.brands()[0] : null,
   );
 
-  protected readonly brandInfo = computed(() => {
+  protected readonly brandImage = computed(() => {
     const brand = this.activeBrand();
-    if (!brand) return null;
-    const items = this.products.filter((product) => product.brand === brand);
-    const categories = this.catalog
-      .getCategories()
-      .filter((category) => items.some((product) => product.categorySlug === category.slug));
-    return { name: brand, count: items.length, image: items[0]?.image ?? '', categories };
+    return brand ? (this.products.find((product) => product.brand === brand)?.image ?? '') : '';
   });
 
   protected readonly groups = computed<readonly ProductGroup[]>(() => {
@@ -69,7 +69,6 @@ export class CatalogPageC {
       .filter((group) => group.products.length > 0);
   });
 
-  protected readonly selectedStock = computed(() => this.state.stock()[0] ?? '');
   protected readonly priceRangeIndex = computed(() =>
     Math.max(
       0,
@@ -78,25 +77,18 @@ export class CatalogPageC {
       ),
     ),
   );
+
   protected readonly whatsappSearchUrl = computed(() =>
     buildSearchWhatsappUrl(this.catalog.whatsappNumber, this.state.query()),
   );
 
-  protected onCategory(value: string): void {
-    this.state.category.set(value || null);
+  /** Brand rail is single-select: it works as navigation, not as a checkbox list. */
+  protected selectBrand(brand: string | null): void {
+    this.state.brands.set(brand ? [brand] : []);
   }
 
-  protected onSubcategory(value: string): void {
-    this.state.subcategory.set(value || null);
-  }
-
-  /** Toolbar selects are single-choice; the shared state supports multi-select. */
-  protected onBrand(value: string): void {
-    this.state.brands.set(value ? [value] : []);
-  }
-
-  protected onStock(value: string): void {
-    this.state.stock.set(value ? [value as StockStatus] : []);
+  protected toggleStock(value: string): void {
+    this.state.toggleStock(value as StockStatus);
   }
 
   protected onPriceRange(index: string): void {

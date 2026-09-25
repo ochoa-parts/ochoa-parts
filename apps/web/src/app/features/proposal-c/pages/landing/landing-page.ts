@@ -1,18 +1,16 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CatalogService } from '@shared/catalog/data/catalog.service';
-import { Icon, IconName } from '@shared/ui/icon/icon';
+import { Icon } from '@shared/ui/icon/icon';
 import { ProductCardC } from '../../components/product-card-c/product-card-c';
 import { QuickOrder } from '../../components/quick-order/quick-order';
 import { PC_PATHS } from '../../proposal-c.paths';
 
-interface TrustItem {
-  readonly icon: IconName;
-  readonly title: string;
-  readonly text: string;
+interface BrandTile {
+  readonly name: string;
+  readonly count: number;
+  readonly image: string;
 }
-
-const QUICK_BRANDS = 5;
 
 @Component({
   selector: 'app-landing-page-c',
@@ -29,26 +27,40 @@ export class LandingPageC {
   protected readonly featured = this.catalog.getFeatured();
   private readonly products = this.catalog.getProducts();
 
-  /** Brand showroom tiles: name, product count and a representative photo. */
-  protected readonly brands = this.catalog.getBrands().map((name) => ({
-    name,
-    count: this.catalog.countBy('brand', name),
-    image: this.products.find((product) => product.brand === name)?.image ?? '',
-  }));
+  /** Brands ordered by catalog depth; the first one gets the large bento tile. */
+  protected readonly brands: readonly BrandTile[] = this.catalog
+    .getBrands()
+    .map((name) => ({
+      name,
+      count: this.catalog.countBy('brand', name),
+      image: this.products.find((product) => product.brand === name)?.image ?? '',
+    }))
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, 'es'));
 
-  protected readonly quickBrands = this.brands.slice(0, QUICK_BRANDS);
+  protected readonly spotlightBrand = this.brands[0];
+  protected readonly otherBrands = this.brands.slice(1);
 
-  protected readonly categories = this.catalog.getCategories().map((category) => ({
+  /** Marquee track: the list twice, so the CSS loop is seamless. */
+  protected readonly marquee = [...this.brands, ...this.brands].map((brand) => brand.name);
+
+  protected readonly categories = this.catalog.getCategories().map((category, index) => ({
     ...category,
+    index: String(index + 1).padStart(2, '0'),
     count: this.catalog.countBy('categorySlug', category.slug),
   }));
 
-  protected readonly trust: readonly TrustItem[] = [
-    { icon: 'award', title: '+200 marcas', text: 'Fabricantes líderes de instrumentación' },
-    { icon: 'package', title: 'Stock visible', text: 'Existencia real en cada producto' },
-    { icon: 'shield', title: 'Pago verificado', text: 'Zelle, pago móvil y transferencias' },
-    { icon: 'file', title: 'Fichas técnicas', text: 'Datasheet y manual por referencia' },
-  ];
+  /** Category previewed on the pedestal (hover / focus). */
+  protected readonly activeCategorySlug = signal(this.categories[0]?.slug ?? '');
+  protected readonly activeCategory = computed(
+    () => this.categories.find((category) => category.slug === this.activeCategorySlug()) ?? null,
+  );
+
+  protected readonly stats = [
+    { value: '+200', label: 'marcas de fabricantes líderes' },
+    { value: '+1.000', label: 'referencias con precio y stock' },
+    { value: '3', label: 'países con presencia comercial' },
+    { value: '6', label: 'métodos de pago verificados' },
+  ] as const;
 
   protected search(term: string): void {
     const q = term.trim();

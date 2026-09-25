@@ -6,30 +6,40 @@ import { Icon } from '@shared/ui/icon/icon';
 import { StockBadge } from '@shared/ui/stock-badge/stock-badge';
 import { PC_PATHS } from '../../proposal-c.paths';
 
-/** Showroom product card: brand badge, big photo, code, price and add-to-cart. */
+/** Showroom card: product on a lit pedestal, brand and code up front, price and quick add. */
 @Component({
   selector: 'app-product-card-c',
   imports: [RouterLink, MoneyPipe, Icon, StockBadge],
   template: `
     <article class="card">
-      <a class="card__media" [routerLink]="detailPath()" tabindex="-1" aria-hidden="true">
-        <span class="card__brand">{{ product().brand }}</span>
-        <img [src]="product().image" [alt]="product().name" loading="lazy" decoding="async" />
+      <a class="card__stage" [routerLink]="detailPath()" tabindex="-1" aria-hidden="true">
+        <span class="card__pedestal">
+          <img [src]="product().image" [alt]="product().name" loading="lazy" decoding="async" />
+        </span>
       </a>
       <div class="card__body">
-        <span class="card__sku pc-mono">{{ product().sku }}</span>
+        <div class="card__meta">
+          <span class="card__brand">{{ product().brand }}</span>
+          <app-stock-badge [status]="product().stockStatus" />
+        </div>
         <h3 class="card__name">
           <a [routerLink]="detailPath()">{{ product().name }}</a>
         </h3>
-        <app-stock-badge [status]="product().stockStatus" />
-        <div class="card__price">
-          <strong>{{ product().priceUsd | money: 'USD' }}</strong>
-          <span>Ref. {{ product().priceBs | money: 'Bs' }}</span>
+        <span class="card__sku pc-mono">{{ product().sku }}</span>
+        <div class="card__foot">
+          <div class="card__price">
+            <strong>{{ product().priceUsd | money: 'USD' }}</strong>
+            <span>Ref. {{ product().priceBs | money: 'Bs' }}</span>
+          </div>
+          <button
+            type="button"
+            class="card__add"
+            [disabled]="product().stockStatus !== 'available'"
+            [attr.aria-label]="'Agregar ' + product().name + ' al carrito'"
+          >
+            <app-icon name="cart" [size]="18" />
+          </button>
         </div>
-        <button type="button" class="card__add" [disabled]="product().stockStatus !== 'available'">
-          <app-icon name="cart" [size]="16" />
-          {{ product().stockStatus === 'available' ? 'Agregar al carrito' : 'Consultar disponibilidad' }}
-        </button>
       </div>
     </article>
   `,
@@ -43,68 +53,71 @@ import { PC_PATHS } from '../../proposal-c.paths';
       display: flex;
       flex-direction: column;
       height: 100%;
-      background: var(--pc-surface);
+      background: var(--pc-panel);
       border: 1px solid var(--pc-line);
-      border-radius: 6px;
+      border-radius: 16px;
       overflow: hidden;
       transition:
-        border-color 0.15s ease,
-        box-shadow 0.15s ease;
+        border-color 0.2s ease,
+        transform 0.2s ease;
 
       &:hover {
-        border-color: var(--pc-ink);
-        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.12);
+        border-color: var(--pc-line-strong);
+        transform: translateY(-4px);
+
+        .card__pedestal {
+          transform: scale(1.03);
+        }
       }
     }
 
-    .card__media {
-      position: relative;
-      display: block;
+    .card__stage {
+      display: grid;
+      place-items: center;
       aspect-ratio: 1;
-      background: radial-gradient(circle at 50% 40%, #ffffff 0%, #eeeeea 100%);
+      padding: 22px;
+      background: radial-gradient(circle at 50% 110%, rgba(0, 11, 126, 0.07), transparent 60%), var(--pc-panel-2);
+    }
+
+    .card__pedestal {
+      display: grid;
+      place-items: center;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--pc-pedestal);
+      box-shadow: 0 24px 40px rgba(15, 23, 42, 0.12);
+      transition: transform 0.3s ease;
 
       img {
-        width: 100%;
-        height: 100%;
+        width: 78%;
+        height: 78%;
         object-fit: contain;
-        padding: 28px;
-        display: block;
-        transition: transform 0.3s ease;
+        mix-blend-mode: multiply;
       }
-
-      &:hover img {
-        transform: scale(1.04);
-      }
-    }
-
-    .card__brand {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      z-index: 1;
-      padding: 4px 10px;
-      border-radius: 2px;
-      background: var(--pc-ink);
-      color: var(--pc-yellow);
-      font-size: 0.75rem;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
     }
 
     .card__body {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
       gap: 8px;
       flex: 1;
-      padding: 16px;
+      padding: 18px;
     }
 
-    .card__sku {
-      font-size: 0.8125rem;
-      color: var(--pc-muted);
-      word-break: break-all;
+    .card__meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card__brand {
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--pc-primary);
     }
 
     .card__name {
@@ -114,54 +127,67 @@ import { PC_PATHS } from '../../proposal-c.paths';
       line-height: 1.3;
 
       a {
-        color: inherit;
+        color: var(--pc-text);
         text-decoration: none;
 
         &:hover {
-          text-decoration: underline;
+          color: var(--pc-primary);
         }
       }
+    }
+
+    .card__sku {
+      font-size: 0.75rem;
+      color: var(--pc-muted);
+      word-break: break-all;
+    }
+
+    .card__foot {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px solid var(--pc-line);
     }
 
     .card__price {
       display: flex;
       flex-direction: column;
-      margin-top: auto;
-      padding-top: 8px;
 
       strong {
-        font-size: 1.375rem;
+        font-family: var(--pc-display);
+        font-size: 1.5rem;
         font-weight: 800;
+        line-height: 1;
       }
 
       span {
-        font-size: 0.8125rem;
+        margin-top: 4px;
+        font-size: 0.75rem;
         color: var(--pc-muted);
       }
     }
 
     .card__add {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      width: 100%;
-      height: 40px;
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      flex-shrink: 0;
       border: 0;
-      border-radius: 4px;
-      background: var(--pc-yellow);
-      color: var(--pc-on-yellow);
-      font: inherit;
-      font-weight: 800;
-      font-size: 0.875rem;
+      border-radius: 50%;
+      background: var(--pc-primary);
+      color: var(--pc-on-primary);
       cursor: pointer;
 
       &:hover:not(:disabled) {
-        background: var(--pc-yellow-dark);
+        background: var(--pc-primary-dark);
       }
 
       &:disabled {
-        background: var(--pc-line-soft);
+        background: var(--pc-panel-3);
         color: var(--pc-muted);
         cursor: not-allowed;
       }

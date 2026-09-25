@@ -1,46 +1,47 @@
 /*
- * Proposal C "Mostrador técnico": dense, code-first, printed-catalog aesthetic.
- * Theme tokens + shared primitives, scoped under the layout element
- * (ViewEncapsulation.None) so nothing leaks into other proposals.
+ * Proposal C "Showroom de marcas": clean light showroom in the client brand blue, brand-first navigation,
+ * products presented on lit pedestals. Theme tokens + shared primitives, scoped under
+ * the layout element (ViewEncapsulation.None) so nothing leaks into other proposals.
  */
 app-proposal-c-layout {
-  --pc-bg: #f2f2ef;
-  --pc-surface: #ffffff;
-  --pc-ink: #16181c;
-  --pc-graphite: #22262c;
-  --pc-graphite-2: #2e333a;
-  --pc-line: #d9d9d4;
-  --pc-line-soft: #ebebe7;
-  --pc-muted: #5c6168;
-  --pc-yellow: #ffc400;
-  --pc-yellow-dark: #e0ab00;
-  --pc-on-yellow: #1a1400;
-  --pc-green: #1f8a4c;
-  --pc-link: #0b5cad;
-  --pc-radius: 4px;
-  --pc-sans: 'Roboto Condensed', 'Arial Narrow', 'Segoe UI', system-ui, sans-serif;
+  /* Client brand blue (sampled from the logo) as primary; yellow only as a small accent. */
+  --pc-bg: #f5f6fa;
+  --pc-panel: #ffffff;
+  --pc-panel-2: #eef1f7;
+  --pc-panel-3: #e3e7f0;
+  --pc-line: #e1e5ee;
+  --pc-line-strong: #c9cfdc;
+  --pc-text: #0f172a;
+  --pc-muted: #5b6478;
+  --pc-primary: #000b7e;
+  --pc-primary-dark: #00075a;
+  --pc-primary-soft: #e8ebfa;
+  --pc-on-primary: #ffffff;
+  --pc-accent: #ffc400;
+  --pc-on-accent: #1a1400;
+  --pc-green: #15803d;
+  --pc-radius: 12px;
+  /* Soft "pedestal" behind product photos (their background is white). */
+  --pc-pedestal: radial-gradient(circle at 50% 40%, #ffffff 0%, #f3f5fa 60%, #e3e7f1 100%);
+  --pc-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --pc-display: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --pc-mono: 'JetBrains Mono', 'Cascadia Mono', Consolas, monospace;
 
-  /* Tokens consumed by shared UI (stock badge, gallery). */
-  --ui-border: var(--pc-line);
-  --ui-accent: var(--pc-ink);
-  --ui-text: var(--pc-ink);
-  --ui-focus: var(--pc-yellow);
-  --ui-radius: var(--pc-radius);
-  --ui-ok-bg: #dcf1e3;
+  /* Tokens consumed by shared UI (stock badge). */
+  --ui-ok-bg: #dcf5e7;
   --ui-ok-text: #146c3b;
-  --ui-warn-bg: #fff1c2;
+  --ui-warn-bg: #fff4cc;
   --ui-warn-text: #7a5a00;
-  --ui-off-bg: #e6e6e2;
-  --ui-off-text: #5c6168;
+  --ui-off-bg: #eceff4;
+  --ui-off-text: #5b6478;
+  --ui-focus: var(--pc-primary);
 
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   background: var(--pc-bg);
-  color: var(--pc-ink);
+  color: var(--pc-text);
   font-family: var(--pc-sans);
-  font-size: 15px;
   color-scheme: light;
 
   > main {
@@ -49,12 +50,12 @@ app-proposal-c-layout {
 
   .pc-container {
     width: 100%;
-    max-width: 1360px;
+    max-width: 1320px;
     margin: 0 auto;
     padding: 0 16px;
 
     @media (min-width: 768px) {
-      padding: 0 24px;
+      padding: 0 32px;
     }
   }
 
@@ -62,62 +63,70 @@ app-proposal-c-layout {
     font-family: var(--pc-mono);
   }
 
-  .pc-h {
-    margin: 0;
-    font-size: 1.0625rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+  .pc-display {
+    font-family: var(--pc-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
 
-  .pc-panel {
-    background: var(--pc-surface);
-    border: 1px solid var(--pc-line);
-    border-radius: var(--pc-radius);
+  .pc-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 14px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--pc-primary);
+
+    &::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--pc-primary);
+      border-radius: 1px;
+    }
   }
 
   .pc-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    height: 38px;
-    padding: 0 16px;
+    gap: 8px;
+    height: 44px;
+    padding: 0 20px;
     border: 1px solid transparent;
-    border-radius: var(--pc-radius);
+    border-radius: 999px;
     font: inherit;
     font-weight: 700;
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     text-decoration: none;
     white-space: nowrap;
     cursor: pointer;
+    transition:
+      background 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease;
   }
 
-  .pc-btn--yellow {
-    background: var(--pc-yellow);
-    color: var(--pc-on-yellow);
+  .pc-btn--primary {
+    background: var(--pc-primary);
+    color: var(--pc-on-primary);
 
     &:hover {
-      background: var(--pc-yellow-dark);
-    }
-  }
-
-  .pc-btn--dark {
-    background: var(--pc-graphite);
-    color: #fff;
-
-    &:hover {
-      background: #000;
+      background: var(--pc-primary-dark);
     }
   }
 
   .pc-btn--ghost {
-    border-color: var(--pc-line);
-    background: var(--pc-surface);
-    color: var(--pc-ink);
+    border-color: var(--pc-line-strong);
+    background: transparent;
+    color: var(--pc-text);
 
     &:hover {
-      border-color: var(--pc-ink);
+      border-color: var(--pc-primary);
+      color: var(--pc-primary);
     }
   }
 
@@ -130,13 +139,9 @@ app-proposal-c-layout {
     }
   }
 
-  .pc-link {
-    color: var(--pc-link);
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
+  .pc-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
   a:focus-visible,
@@ -144,26 +149,26 @@ app-proposal-c-layout {
   input:focus-visible,
   select:focus-visible,
   textarea:focus-visible {
-    outline: 3px solid var(--pc-yellow);
-    outline-offset: 1px;
+    outline: 3px solid var(--pc-primary);
+    outline-offset: 2px;
   }
 
   .pc-review-pill {
     position: fixed;
     left: 16px;
     bottom: 16px;
-    z-index: 60;
+    z-index: 70;
     display: inline-flex;
     align-items: center;
     gap: 6px;
     padding: 8px 14px;
     border-radius: 999px;
-    background: rgba(22, 24, 28, 0.92);
+    background: var(--pc-text);
     color: #fff;
     font-size: 0.8125rem;
     font-weight: 600;
     text-decoration: none;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.1);
   }
 
   .sr-only {

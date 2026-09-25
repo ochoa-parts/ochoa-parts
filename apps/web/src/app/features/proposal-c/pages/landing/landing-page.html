@@ -1,113 +1,137 @@
-<!-- Hero -->
+<!-- Hero: centered statement + framed showroom photo -->
 <section class="hero">
-  <img class="hero__bg" src="propuesta-c/hero.webp" alt="" fetchpriority="high" />
   <div class="pc-container hero__inner">
-    <p class="hero__kicker">Distribuidor de instrumentación y control industrial</p>
-    <h1 class="hero__title">Las marcas líderes en instrumentación, <span>en un solo proveedor.</span></h1>
+    <p class="pc-kicker">Showroom de instrumentación industrial</p>
+    <h1 class="hero__title pc-display">
+      Las marcas que mueven<br />tu planta. <span>En un solo lugar.</span>
+    </h1>
     <p class="hero__lead">
-      Transmisores, medidores de caudal y nivel, válvulas y automatización de más de 200 fabricantes.
-      Busca por código de fabricante y compra en línea.
+      Transmisores, medidores, válvulas y automatización de más de 200 fabricantes, con precio y
+      existencia a la vista.
     </p>
 
     <form class="hero__search" role="search" (submit)="$event.preventDefault(); search(term.value)">
       <label class="sr-only" for="pc-hero-search">Buscar por código de fabricante o marca</label>
       <app-icon name="search" [size]="20" class="hero__search-icon" />
-      <input id="pc-hero-search" #term type="search" class="pc-mono" placeholder="Ej. 3051CD, DVC6200, 6ES7214…" autocomplete="off" />
-      <button type="submit">Buscar</button>
+      <input id="pc-hero-search" #term type="search" class="pc-mono" placeholder="3051CD · DVC6200 · 6ES7214…" autocomplete="off" />
+      <button type="submit" class="pc-btn pc-btn--primary">Buscar</button>
     </form>
 
-    <div class="hero__brands">
-      <span>Marcas populares:</span>
-      @for (brand of quickBrands; track brand.name) {
-        <a [routerLink]="paths.catalog" [queryParams]="{ brand: brand.name }">{{ brand.name }}</a>
+    <figure class="hero__frame">
+      <img src="propuesta-c/hero.webp" alt="Transmisores, medidores y válvulas de distintas marcas en el showroom" fetchpriority="high" />
+      <figcaption class="hero__tag hero__tag--left">
+        <strong>+200</strong> marcas
+      </figcaption>
+      <span class="hero__tag hero__tag--right" aria-hidden="true">
+        <span class="dot"></span> Stock en tiempo real
+      </span>
+    </figure>
+  </div>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      @for (name of marquee; track $index) {
+        <span>{{ name }}</span>
       }
     </div>
   </div>
 </section>
 
-<!-- Trust strip -->
-<section class="trust">
-  <div class="pc-container trust__inner">
-    @for (item of trust; track item.title) {
-      <div class="trust__item">
-        <span class="trust__icon"><app-icon [name]="item.icon" [size]="22" /></span>
-        <span><strong>{{ item.title }}</strong>{{ item.text }}</span>
-      </div>
-    }
-  </div>
-</section>
-
-<!-- Shop by brand -->
-<section class="section section--dark" id="marcas">
+<!-- Brands bento -->
+<section class="section" id="marcas">
   <div class="pc-container">
     <div class="head">
       <div>
-        <p class="kicker">Compra por marca</p>
-        <h2 class="title">Marcas que distribuimos</h2>
+        <p class="pc-kicker">Compra por marca</p>
+        <h2 class="head__title pc-display">Elige tu fabricante</h2>
       </div>
-      <a class="head__link" [routerLink]="paths.catalog">Ver todas las marcas →</a>
+      <a class="head__link" [routerLink]="paths.catalog">Ver catálogo completo <app-icon name="arrowRight" [size]="16" /></a>
     </div>
-    <ul class="brands">
-      @for (brand of brands; track brand.name) {
+
+    <ul class="bento">
+      @if (spotlightBrand; as brand) {
+        <li class="bento__spot">
+          <a class="brand brand--spot" [routerLink]="paths.catalog" [queryParams]="{ brand: brand.name }">
+            <span class="brand__label">Marca destacada</span>
+            <span class="brand__name pc-display">{{ brand.name }}</span>
+            <span class="brand__count">{{ brand.count }} productos en catálogo</span>
+            <span class="brand__pedestal"><img [src]="brand.image" alt="" loading="lazy" /></span>
+            <span class="brand__cta">Ver productos <app-icon name="arrowRight" [size]="16" /></span>
+          </a>
+        </li>
+      }
+      @for (brand of otherBrands; track brand.name) {
         <li>
           <a class="brand" [routerLink]="paths.catalog" [queryParams]="{ brand: brand.name }">
-            <span class="brand__name">{{ brand.name }}</span>
-            @if (brand.image) {
-              <img [src]="brand.image" alt="" loading="lazy" />
-            }
-            <span class="brand__foot">
-              {{ brand.count }} {{ brand.count === 1 ? 'producto' : 'productos' }}
-              <span class="brand__arrow">→</span>
+            <span class="brand__pedestal brand__pedestal--sm"><img [src]="brand.image" alt="" loading="lazy" /></span>
+            <span class="brand__text">
+              <span class="brand__name pc-display">{{ brand.name }}</span>
+              <span class="brand__count">{{ brand.count }} {{ brand.count === 1 ? 'producto' : 'productos' }}</span>
             </span>
           </a>
         </li>
       }
-      <li>
+      <li class="bento__more">
         <a class="brand brand--more" [routerLink]="paths.catalog">
-          <span class="brand__more-count">+200</span>
-          <span class="brand__more-text">marcas disponibles bajo pedido</span>
-          <span class="brand__foot">Explorar catálogo <span class="brand__arrow">→</span></span>
+          <span class="brand__more pc-display">+200</span>
+          <span class="brand__count">marcas bajo pedido</span>
         </a>
       </li>
     </ul>
   </div>
 </section>
 
-<!-- Shop by category -->
-<section class="section">
-  <div class="pc-container">
-    <div class="head">
-      <div>
-        <p class="kicker kicker--dark">Compra por categoría</p>
-        <h2 class="title title--dark">¿Qué estás buscando?</h2>
-      </div>
+<!-- Categories: typographic list + live pedestal -->
+<section class="section section--panel">
+  <div class="pc-container cats">
+    <div class="cats__list">
+      <p class="pc-kicker">Compra por categoría</p>
+      <h2 class="head__title pc-display">¿Qué necesitas?</h2>
+      <ul>
+        @for (category of categories; track category.slug) {
+          <li>
+            <a
+              class="cat"
+              [class.is-active]="activeCategorySlug() === category.slug"
+              [routerLink]="paths.catalog"
+              [queryParams]="{ cat: category.slug }"
+              (mouseenter)="activeCategorySlug.set(category.slug)"
+              (focus)="activeCategorySlug.set(category.slug)"
+            >
+              <span class="cat__index pc-mono">{{ category.index }}</span>
+              <span class="cat__text">
+                <span class="cat__name pc-display">{{ category.name }}</span>
+                <span class="cat__desc">{{ category.description }}</span>
+              </span>
+              <span class="cat__count">{{ category.count }}</span>
+              <app-icon name="arrowRight" [size]="20" class="cat__arrow" />
+            </a>
+          </li>
+        }
+      </ul>
     </div>
-    <ul class="categories">
-      @for (category of categories; track category.slug) {
-        <li>
-          <a class="category" [routerLink]="paths.catalog" [queryParams]="{ cat: category.slug }">
-            <img [src]="category.image" alt="" loading="lazy" />
-            <span class="category__text">
-              <strong>{{ category.name }}</strong>
-              <span>{{ category.description }}</span>
-            </span>
-            <em>{{ category.count }}</em>
-          </a>
-        </li>
+
+    <div class="cats__stage" aria-hidden="true">
+      @if (activeCategory(); as category) {
+        <div class="stage">
+          <span class="stage__pedestal"><img [src]="category.image" alt="" /></span>
+          <span class="stage__name pc-display">{{ category.name }}</span>
+          <span class="stage__count">{{ category.count }} productos disponibles</span>
+        </div>
       }
-    </ul>
+    </div>
   </div>
 </section>
 
 <!-- Featured -->
-<section class="section section--muted">
+<section class="section">
   <div class="pc-container">
     <div class="head">
       <div>
-        <p class="kicker kicker--dark">Destacados</p>
-        <h2 class="title title--dark">Productos con existencia inmediata</h2>
+        <p class="pc-kicker">Existencia inmediata</p>
+        <h2 class="head__title pc-display">Listos para despacho</h2>
       </div>
-      <a class="head__link head__link--dark" [routerLink]="paths.catalog">Ver catálogo completo →</a>
+      <a class="head__link" [routerLink]="paths.catalog">Ver todo <app-icon name="arrowRight" [size]="16" /></a>
     </div>
     <ul class="products">
       @for (product of featured; track product.sku) {
@@ -117,14 +141,26 @@
   </div>
 </section>
 
+<!-- Stats -->
+<section class="stats">
+  <div class="pc-container stats__inner">
+    @for (stat of stats; track stat.label) {
+      <div class="stats__item">
+        <strong class="pc-display">{{ stat.value }}</strong>
+        <span>{{ stat.label }}</span>
+      </div>
+    }
+  </div>
+</section>
+
 <!-- Quick order -->
-<section class="section section--dark" id="pedido-rapido">
+<section class="section" id="pedido-rapido">
   <div class="pc-container">
     <div class="head">
       <div>
-        <p class="kicker">Para compras recurrentes</p>
-        <h2 class="title">¿Ya tienes tu lista de códigos?</h2>
-        <p class="head__text">Pega tus referencias y agrega al carrito las que tengan existencia, en un solo paso.</p>
+        <p class="pc-kicker">Para compras recurrentes</p>
+        <h2 class="head__title pc-display">Pedido rápido por códigos</h2>
+        <p class="head__text">Pega tu lista de referencias y agrega al carrito las que tengan existencia, en un solo paso.</p>
       </div>
     </div>
     <app-quick-order />
