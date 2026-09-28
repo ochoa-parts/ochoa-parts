@@ -25,6 +25,14 @@ const angularApp = new AngularNodeAppEngine();
  */
 
 /**
+ * Liveness probe used by the hosting platform (Railway) to gate traffic on new deploys.
+ * Registered before the static and SSR handlers so it never triggers a render.
+ */
+app.get('/healthz', (_req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
+/**
  * Serve static files from /browser
  */
 app.use(
