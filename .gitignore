@@ -16,3 +16,20 @@ out-tsc/
 .DS_Store
 Thumbs.db
 .idea/
+
+# Client data (confidential): source spreadsheets and migration workspace
+/INVENTARIO*.xlsx
+/migracion-datos/
+
+# The backend is its own private repository (github.com/ochoaparts2026/ochoa-parts-backend)
+/ochoa-parts-backend/
+
+# Design sources (HTML/CSS/data) that generate the docs images; internal, never public
+/diagramas-fuentes/
+# Frontend docs (internal designs) until the frontend has its own private repository
+/ochoa-parts-frontend/docs/
+
+# Flowbite Pro admin kit: licensed, never redistributed in this public repository
+/flowbite-admin-dashboard-v*/
+# Admin panel: its own private repository (github.com/ochoaparts2026/ochoa-parts-frontend)
+/ochoa-parts-frontend/
