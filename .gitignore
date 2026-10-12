@@ -8,6 +8,9 @@ out-tsc/
 .env
 .env.*
 !.env.example
+# Credentials (Firebase service account and the like): never in any repository
+/secretos/
+*-firebase-adminsdk-*.json
 
 # Logs
 *.log
