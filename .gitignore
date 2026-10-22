@@ -23,6 +23,8 @@ Thumbs.db
 # Client data (confidential): source spreadsheets and migration workspace
 /INVENTARIO*.xlsx
 /migracion-datos/
+# Product photos and files sent by the company (22/10/2026)
+/publicaciones/
 
 # The backend is its own private repository (github.com/ochoaparts2026/ochoa-parts-backend)
 /ochoa-parts-backend/
