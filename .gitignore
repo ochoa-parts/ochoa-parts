@@ -38,3 +38,5 @@ Thumbs.db
 /flowbite-admin-dashboard-v*/
 # Admin panel: its own private repository (github.com/ochoaparts2026/ochoa-parts-frontend)
 /ochoa-parts-frontend/
+# Company documents sent for the legal pages (RIF, 30/10/2026)
+/*RIF*.pdf
